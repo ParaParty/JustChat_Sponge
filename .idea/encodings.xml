@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding">
+    <file url="file://$PROJECT_DIR$/src/main/java/com/superexercisebook/justchat/Justchat.java" charset="GB2312" />
+    <file url="file://$PROJECT_DIR$/src/main/java/com/superexercisebook/justchat/JustchatClient.java" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/src/main/java/com/xuhao/didi/socket/client/sdk/client/connection/AbsReconnectionManager.java" charset="GB2312" />
+    <file url="file://$PROJECT_DIR$/src/main/java/com/xuhao/didi/socket/client/sdk/client/connection/DefaultReconnectManager.java" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/src/main/java/com/xuhao/didi/socket/client/sdk/client/connection/IConnectionManager.java" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/src/main/java/com/xuhao/didi/socket/client/sdk/client/connection/NoneReconnect.java" charset="GBK" />
+    <file url="PROJECT" charset="GBK" />
+  </component>
+</project>

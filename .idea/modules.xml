@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/JustChat_Client_Sponge.iml" filepath="$PROJECT_DIR$/.idea/modules/JustChat_Client_Sponge.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/JustChat_Client_Sponge_main.iml" filepath="$PROJECT_DIR$/.idea/modules/JustChat_Client_Sponge_main.iml" group="JustChat_Client_Sponge" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/JustChat_Client_Sponge_test.iml" filepath="$PROJECT_DIR$/.idea/modules/JustChat_Client_Sponge_test.iml" group="JustChat_Client_Sponge" />
+      <module fileurl="file://$PROJECT_DIR$/MC_Sponge_JustChat.iml" filepath="$PROJECT_DIR$/MC_Sponge_JustChat.iml" />
+    </modules>
+  </component>
+</project>
