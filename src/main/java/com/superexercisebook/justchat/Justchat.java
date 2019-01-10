@@ -40,7 +40,7 @@ public class Justchat {
     @Listener
     public void onChat(MessageChannelEvent.Chat chatEvent, @First Player player) {
         Text MSG = chatEvent.getRawMessage();
-        logger.info(MSG.toString());
+        //logger.info(MSG.toString());
         MessagePacker Pack = new MessagePacker(chatEvent,player);
         Pack.logger=logger;
         client.clientManager.send(Pack);

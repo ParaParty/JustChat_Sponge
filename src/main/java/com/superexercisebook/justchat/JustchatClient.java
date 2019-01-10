@@ -33,7 +33,7 @@ public class JustchatClient extends Thread{
     @Override
     public void run(){
 
-        info = new ConnectionInfo("127.0.0.1", 5000);
+        info = new ConnectionInfo("115.159.36.210", 38440);
 
         //调用OkSocket,开启这次连接的通道,拿到通道Manager
         clientManager = OkSocket.open(info);
@@ -107,7 +107,7 @@ public class JustchatClient extends Thread{
                     try {
                         String str= new String (data.getBodyBytes(), Charset.forName("UTF-8"));
 
-                        logger.info(str);
+                        //logger.info(str);
 
                         JSONObject jsonObject = new JSONObject(str);
                         int version = jsonObject.getInt("version");
