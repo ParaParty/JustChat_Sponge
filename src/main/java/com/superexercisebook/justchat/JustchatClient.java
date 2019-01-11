@@ -116,13 +116,15 @@ public class JustchatClient extends Thread{
 
                             if (messageType==MessagePackType.MESSAGE) {
 
-                                String sender = new String(Base64.getDecoder().decode(jsonObject.getString("sender")), Charset.forName("UTF-8"));
-                                String content = new String(Base64.getDecoder().decode(jsonObject.getString("content")), Charset.forName("UTF-8"));
+                                String sender = MessageTools.Base64Decode(jsonObject.getString("sender"));
+                                String SContent = MessageTools.Base64Decode(jsonObject.getString("content"));
+                                MessageContentUnpacker content = new MessageContentUnpacker(SContent);
+                                content.logger = logger;
 
                                 Text TTag = Text.builder("[*] ").color(DARK_GREEN).build();
                                 Text TSender = Text.builder(sender).color(DARK_GREEN).build();
                                 Text TSplit = Text.builder(": ").build();
-                                Text TContent = Text.builder(content).build();
+                                Text TContent = content.toText();
 
                                 Text Content = Text.builder().append(TTag, TSender, TSplit, TContent).build();
                                 MessageChannel.TO_ALL.send(Content);

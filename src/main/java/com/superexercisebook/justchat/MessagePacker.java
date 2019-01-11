@@ -12,10 +12,9 @@ import org.spongepowered.api.event.message.MessageChannelEvent;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.charset.Charset;
-import java.util.Base64;
 
 public class MessagePacker implements ISendable {
-    public static  int PackVersion=0;
+    public static  int PackVersion=1;
 
 
     final static byte[] MessageHeader = {0x11,0x45,0x14};
@@ -28,8 +27,8 @@ public class MessagePacker implements ISendable {
         try {
             jsonObject.put("version", PackVersion);
             jsonObject.put("type", MessagePackType.MESSAGE);
-            jsonObject.put("sender", Base64.getEncoder().encodeToString(player.getName().getBytes(Charset.forName("utf-8"))));
-            jsonObject.put("content",Base64.getEncoder().encodeToString(chatEvent.getRawMessage().toString().getBytes(Charset.forName("utf-8"))));
+            jsonObject.put("sender", MessageTools.Base64Encode(player.getName()));
+            jsonObject.put("content",MessageTools.Base64Encode(chatEvent.getRawMessage().toString()));
             this.MSG = jsonObject.toString();
         } catch (JSONException e) {
             e.printStackTrace();
