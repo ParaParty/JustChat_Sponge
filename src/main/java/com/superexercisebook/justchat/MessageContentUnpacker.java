@@ -16,8 +16,8 @@ public class MessageContentUnpacker {
     JSONArray data;
     public Logger logger;
 
-    public MessageContentUnpacker(String s){
-        data = new JSONArray(s);
+    public MessageContentUnpacker(JSONArray s){
+        data = s;
     }
 
     public Text toText(){

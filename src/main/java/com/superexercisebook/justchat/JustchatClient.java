@@ -117,8 +117,7 @@ public class JustchatClient extends Thread{
                             if (messageType==MessagePackType.MESSAGE) {
 
                                 String sender = MessageTools.Base64Decode(jsonObject.getString("sender"));
-                                String SContent = MessageTools.Base64Decode(jsonObject.getString("content"));
-                                MessageContentUnpacker content = new MessageContentUnpacker(SContent);
+                                MessageContentUnpacker content = new MessageContentUnpacker(jsonObject.getJSONArray("content"));
                                 content.logger = logger;
 
                                 Text TTag = Text.builder("[*] ").color(DARK_GREEN).build();
@@ -135,9 +134,9 @@ public class JustchatClient extends Thread{
                         } else
                         {
                             if (version>MessagePacker.PackVersion) {
-                                logger.info("Received a message made by a lower-version server.");
-                            } else {
                                 logger.info("Received a message made by a higher-version server.");
+                            } else {
+                                logger.info("Received a message made by a lower-version server.");
                             }
                         }
                     } catch (JSONException e) {

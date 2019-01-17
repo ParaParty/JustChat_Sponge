@@ -1,5 +1,7 @@
 package com.superexercisebook.justchat;
 
+import com.google.gson.JsonArray;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -14,12 +16,32 @@ import java.nio.ByteOrder;
 import java.nio.charset.Charset;
 
 public class MessagePacker implements ISendable {
-    public static  int PackVersion=1;
+    public static  int PackVersion=2;
 
 
     final static byte[] MessageHeader = {0x11,0x45,0x14};
     private String MSG = "";
     public Logger logger;
+
+    private JSONArray ContentPacker(String msg){
+        JSONArray jsonArray = new JSONArray();
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("type","text");
+            String content = msg.substring(5,msg.length()-1);
+            jsonObject.put("content",content);
+
+            jsonArray.put(jsonObject);
+            return jsonArray;
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+    }
+
+
 
     public MessagePacker(MessageChannelEvent.Chat chatEvent, @First Player player){
 
@@ -27,8 +49,10 @@ public class MessagePacker implements ISendable {
         try {
             jsonObject.put("version", PackVersion);
             jsonObject.put("type", MessagePackType.MESSAGE);
+            jsonObject.put("world", MessageTools.Base64Encode(player.getWorld().getName()));
+            jsonObject.put("world_display", MessageTools.Base64Encode(player.getWorld().getName()));
             jsonObject.put("sender", MessageTools.Base64Encode(player.getName()));
-            jsonObject.put("content",MessageTools.Base64Encode(chatEvent.getRawMessage().toString()));
+            jsonObject.put("content",ContentPacker(chatEvent.getRawMessage().toString()));
             this.MSG = jsonObject.toString();
         } catch (JSONException e) {
             e.printStackTrace();
