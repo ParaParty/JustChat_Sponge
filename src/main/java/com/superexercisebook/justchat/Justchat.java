@@ -1,19 +1,18 @@
 package com.superexercisebook.justchat;
 
 import com.google.inject.Inject;
+import java.nio.file.Path;
 import org.slf4j.Logger;
+import org.spongepowered.api.config.ConfigDir;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
-import org.spongepowered.api.event.cause.Cause;
-import org.spongepowered.api.event.cause.entity.damage.source.EntityDamageSource;
-import org.spongepowered.api.event.cause.entity.damage.source.IndirectEntityDamageSource;
-import org.spongepowered.api.event.entity.AttackEntityEvent;
 import org.spongepowered.api.event.entity.DamageEntityEvent;
 import org.spongepowered.api.event.filter.cause.First;
 import org.spongepowered.api.event.game.state.GameStartedServerEvent;
 import org.spongepowered.api.event.message.MessageChannelEvent;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
 import org.spongepowered.api.plugin.Plugin;
+
 @Plugin(
         id = "justchat",
         name = "JustChat",
@@ -29,17 +28,30 @@ import org.spongepowered.api.plugin.Plugin;
 public class Justchat {
 
     JustchatClient client;
+    Justchat_Config config;
+
 
     @Inject
-    private Logger logger;
+    Logger logger;
+
+    @Inject
+    @ConfigDir(sharedRoot = false)
+    private Path defaultConfigDir;
 
     @Listener
     public void onServerStart(GameStartedServerEvent event) {
         logger.info("JustChat with your friends.");
+
+        config = new Justchat_Config(logger,defaultConfigDir);
+
         client = new JustchatClient();
         client.logger=logger;
         client.run();
+
+
     }
+
+
 
     @Listener
     public void onChat(MessageChannelEvent.Chat chatEvent, @First Player player) {
@@ -64,9 +76,8 @@ public class Justchat {
     }
 
 
-
     @Listener
-    public void onPlayerDamage(DamageEntityEvent event, @First IndirectEntityDamageSource source) {
+    public void onPlayerDamage(DamageEntityEvent event) {
         if ((event.getTargetEntity() instanceof Player) && (event.willCauseDeath())) {
             Player player = (Player) event.getTargetEntity();
             //Cause cause = event.getCause();
@@ -75,13 +86,5 @@ public class Justchat {
         }
     }
 
-/*
-    @Listener
-    public void onPlayerDamage(AttackEntityEvent event, @First EntityDamageSource source) {
-        if ((event.getTargetEntity() instanceof Player)) {
-            Player player = (Player) source.getSource();
-        }
-    }
-*/
 
 }

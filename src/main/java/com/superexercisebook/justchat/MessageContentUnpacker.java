@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.net.URL;
 
 import static org.spongepowered.api.text.format.TextColors.*;
+import static org.spongepowered.api.text.format.TextStyles.*;
 
 public class MessageContentUnpacker {
     JSONArray data;
@@ -46,12 +47,12 @@ public class MessageContentUnpacker {
                     try {
                         URL url = new URL(obj.getString("url"));
                         ClickAction a = TextActions.openUrl(url);
-                        Text t = Text.builder(MessageTools.Base64Decode(obj.getString("content"))).color(BLUE).onClick(a).build();
+                        Text t = Text.builder(MessageTools.Base64Decode(obj.getString("content"))).color(BLUE).style(UNDERLINE).onClick(a).build();
                         result.append(t);
                         //logger.info(t.toString());
                     }
                     catch(IOException e){
-                        logger.error("Received a message with a invalid image declaration");
+                        logger.error("Received a message with a invalid image declaration",e);
                     }
                 }
             }

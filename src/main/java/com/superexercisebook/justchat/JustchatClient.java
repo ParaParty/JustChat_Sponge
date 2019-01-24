@@ -15,7 +15,6 @@ import org.spongepowered.api.text.Text;
 
 import java.nio.ByteOrder;
 import java.nio.charset.Charset;
-import java.util.Base64;
 
 import static org.spongepowered.api.text.format.TextColors.*;
 
@@ -33,7 +32,8 @@ public class JustchatClient extends Thread{
     @Override
     public void run(){
 
-        info = new ConnectionInfo("115.159.36.210", 38440);
+        info = new ConnectionInfo(Justchat_Config.Settings.ip, Justchat_Config.Settings.port);
+        logger.info("Target server: "+Justchat_Config.Settings.ip+":"+Justchat_Config.Settings.port);
 
         //调用OkSocket,开启这次连接的通道,拿到通道Manager
         clientManager = OkSocket.open(info);
@@ -140,7 +140,7 @@ public class JustchatClient extends Thread{
                             }
                         }
                     } catch (JSONException e) {
-                        logger.error("Received an unrecognized message.");
+                        logger.error("Received an unrecognized message.",e);
                     }
 
 
