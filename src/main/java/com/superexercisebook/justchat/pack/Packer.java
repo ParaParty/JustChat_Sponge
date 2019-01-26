@@ -1,4 +1,4 @@
-package com.superexercisebook.justchat;
+package com.superexercisebook.justchat.pack;
 
 import com.xuhao.didi.core.iocore.interfaces.ISendable;
 
@@ -6,8 +6,8 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.charset.Charset;
 
-public class MessagePacker implements ISendable {
-    public static int PackVersion=2;
+public class Packer implements ISendable {
+    public static int PackVersion=3;
     String MSG = "";
 
     final static byte[] MessageHeader = {0x11,0x45,0x14};

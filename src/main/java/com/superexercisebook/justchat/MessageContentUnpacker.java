@@ -1,5 +1,8 @@
 package com.superexercisebook.justchat;
 
+import com.google.common.collect.ImmutableMap;
+import com.superexercisebook.justchat.config.locale.Locale;
+import com.superexercisebook.justchat.pack.MessageTools;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -10,12 +13,11 @@ import org.spongepowered.api.text.action.TextActions;
 import java.io.IOException;
 import java.net.URL;
 
-import static org.spongepowered.api.text.format.TextColors.*;
-import static org.spongepowered.api.text.format.TextStyles.*;
 
 public class MessageContentUnpacker {
     JSONArray data;
     public Logger logger;
+    public Locale textConfig;
 
     public MessageContentUnpacker(JSONArray s){
         data = s;
@@ -31,14 +33,23 @@ public class MessageContentUnpacker {
             //logger.info(obj.toString());
 
             if (obj.getString("type").equals("text")) {
-                Text t = Text.builder(MessageTools.Base64Decode(obj.getString("content"))).build();
+
+                Text t = textConfig.MSGFormat_text().apply(ImmutableMap.of(
+                            "CONTENT",Text.of(MessageTools.Base64Decode(obj.getString("content")))
+
+                )).build();
                 result.append(t);
                 //logger.info(t.toString());
+
+
             }
             else
             if (obj.getString("type").equals("cqcode")){
                 if (obj.getString("function").equals("CQ:at")){
-                    Text t = Text.builder(MessageTools.Base64Decode(obj.getString("target"))).color(BLUE).build();
+
+                    Text t = textConfig.MSGFormat_at().apply(ImmutableMap.of(
+                            "TARGET",MessageTools.Base64Decode(obj.getString("target"))
+                    )).build();
                     result.append(t);
                     //logger.info(t.toString());
                 }
@@ -47,7 +58,10 @@ public class MessageContentUnpacker {
                     try {
                         URL url = new URL(obj.getString("url"));
                         ClickAction a = TextActions.openUrl(url);
-                        Text t = Text.builder(MessageTools.Base64Decode(obj.getString("content"))).color(BLUE).style(UNDERLINE).onClick(a).build();
+
+                        Text t = textConfig.MSGFormat_image().apply(ImmutableMap.of(
+                                "CONTENT",MessageTools.Base64Decode(obj.getString("content"))
+                        )).onClick(a).build();
                         result.append(t);
                         //logger.info(t.toString());
                     }

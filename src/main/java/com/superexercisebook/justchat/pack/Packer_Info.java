@@ -1,13 +1,13 @@
-package com.superexercisebook.justchat;
+package com.superexercisebook.justchat.pack;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import org.spongepowered.api.entity.living.player.Player;
 
-public class MessagePacker_Info extends MessagePacker{
+public class Packer_Info extends Packer {
 
-    public MessagePacker_Info(int eventType,Player player){
+    public Packer_Info(int eventType, Player player){
 
         JSONObject jsonObject = new JSONObject();
         try {
@@ -23,7 +23,7 @@ public class MessagePacker_Info extends MessagePacker{
     }
 
 
-    public MessagePacker_Info(int eventType,Player player,String content){
+    public Packer_Info(int eventType, Player player, String content){
 
         JSONObject jsonObject = new JSONObject();
         try {

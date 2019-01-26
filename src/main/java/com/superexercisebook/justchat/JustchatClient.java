@@ -1,5 +1,9 @@
 package com.superexercisebook.justchat;
 
+import com.google.common.collect.ImmutableMap;
+import com.superexercisebook.justchat.pack.MessagePackType;
+import com.superexercisebook.justchat.pack.Packer;
+import com.superexercisebook.justchat.pack.MessageTools;
 import com.xuhao.didi.core.pojo.OriginalData;
 import com.xuhao.didi.core.protocol.IReaderProtocol;
 import com.xuhao.didi.socket.client.sdk.OkSocket;
@@ -16,24 +20,26 @@ import org.spongepowered.api.text.Text;
 import java.nio.ByteOrder;
 import java.nio.charset.Charset;
 
-import static org.spongepowered.api.text.format.TextColors.*;
+import com.superexercisebook.justchat.Settings;
 
 public class JustchatClient extends Thread{
 
     final static byte[] MessageHeader = {0x11,0x45,0x14};
+    //设置自定义解析头
 
     public ConnectionInfo info;
     public IConnectionManager clientManager;
-    public Logger logger;
-    //设置自定义解析头
     private OkSocketOptions.Builder okOptionsBuilder;
 
+
+    public Logger logger;
+    public Settings config;
 
     @Override
     public void run(){
 
-        info = new ConnectionInfo(Justchat_Config.Settings.ip, Justchat_Config.Settings.port);
-        logger.info("Target server: "+Justchat_Config.Settings.ip+":"+Justchat_Config.Settings.port);
+        info = new ConnectionInfo(config.getGeneral().server().ip(), config.getGeneral().server().port());
+        logger.info("Target server: "+config.getGeneral().server().ip()+":"+config.getGeneral().server().port());
 
         //调用OkSocket,开启这次连接的通道,拿到通道Manager
         clientManager = OkSocket.open(info);
@@ -71,10 +77,10 @@ public class JustchatClient extends Thread{
                         (header[6]&0xff));
                 */
                 //0 1 2 3 4 5 6
-                /*if (PulsePacker.isPulse(header)){
+                /*if (Packer_Pulse.isPulse(header)){
                     return 0;
                 }
-                else*/ if (MessagePacker.isMessage(header)){
+                else*/ if (Packer.isMessage(header)){
                     int len = (header[3]&0xff)*(2<<23)+
                             (header[4]&0xff)*(2<<15)+
                             (header[5]&0xff)*(2<<7)+
@@ -93,17 +99,18 @@ public class JustchatClient extends Thread{
             @Override
             public void onSocketConnectionSuccess(ConnectionInfo info, String action) {
                 logger.info("connected.");
+
             }
 
             @Override
             public void onSocketReadResponse(ConnectionInfo info, String action, OriginalData data) {
                 //遵循以上规则,这个回调才可以正常收到服务器返回的数据,数据在OriginalData中,为byte[]数组,该数组数据已经处理过字节序问题,直接放入ByteBuffer中即可使用
 
-                /*if (PulsePacker.isPulse(data.getHeadBytes())){
+                /*if (Packer_Pulse.isPulse(data.getHeadBytes())){
                     logger.info("1");
                     clientManager.getPulseManager().pulse();
                 }
-                else */if (MessagePacker.isMessage(data.getHeadBytes())){
+                else */if (Packer.isMessage(data.getHeadBytes())){
                     try {
                         String str= new String (data.getBodyBytes(), Charset.forName("UTF-8"));
 
@@ -111,21 +118,22 @@ public class JustchatClient extends Thread{
 
                         JSONObject jsonObject = new JSONObject(str);
                         int version = jsonObject.getInt("version");
-                        if (version==MessagePacker.PackVersion) {
+                        if (version== Packer.PackVersion) {
                             int messageType = jsonObject.getInt("type");
 
-                            if (messageType==MessagePackType.MESSAGE) {
+                            if (messageType== MessagePackType.MESSAGE) {
 
                                 String sender = MessageTools.Base64Decode(jsonObject.getString("sender"));
                                 MessageContentUnpacker content = new MessageContentUnpacker(jsonObject.getJSONArray("content"));
+                                content.textConfig = config.getText();
                                 content.logger = logger;
 
-                                Text TTag = Text.builder("[*] ").color(DARK_GREEN).build();
-                                Text TSender = Text.builder(sender).color(DARK_GREEN).build();
-                                Text TSplit = Text.builder(": ").build();
-                                Text TContent = content.toText();
+                                Text Content = config.getText().MSGFormat_overview().apply(ImmutableMap.of(
+                                        "SENDER",sender,
+                                        "BODY",content.toText()
 
-                                Text Content = Text.builder().append(TTag, TSender, TSplit, TContent).build();
+                                )).build();
+
                                 MessageChannel.TO_ALL.send(Content);
 
                             } else {
@@ -133,7 +141,7 @@ public class JustchatClient extends Thread{
                             }
                         } else
                         {
-                            if (version>MessagePacker.PackVersion) {
+                            if (version> Packer.PackVersion) {
                                 logger.info("Received a message made by a higher-version server.");
                             } else {
                                 logger.info("Received a message made by a lower-version server.");

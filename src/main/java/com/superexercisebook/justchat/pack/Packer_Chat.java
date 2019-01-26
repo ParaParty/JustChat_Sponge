@@ -1,6 +1,5 @@
-package com.superexercisebook.justchat;
+package com.superexercisebook.justchat.pack;
 
-import com.google.gson.JsonArray;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -10,7 +9,7 @@ import org.spongepowered.api.event.filter.cause.First;
 import org.spongepowered.api.event.message.MessageChannelEvent;
 
 
-public class MessagePacker_Chat extends MessagePacker{
+public class Packer_Chat extends Packer {
     private JSONArray ContentPacker(String msg){
         JSONArray jsonArray = new JSONArray();
         JSONObject jsonObject = new JSONObject();
@@ -31,7 +30,7 @@ public class MessagePacker_Chat extends MessagePacker{
 
 
 
-    public MessagePacker_Chat(MessageChannelEvent.Chat chatEvent, @First Player player){
+    public Packer_Chat(MessageChannelEvent.Chat chatEvent, @First Player player){
 
         JSONObject jsonObject = new JSONObject();
         try {
