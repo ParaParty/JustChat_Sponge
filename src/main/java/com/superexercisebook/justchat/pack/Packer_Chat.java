@@ -16,7 +16,7 @@ public class Packer_Chat extends Packer {
         try {
             jsonObject.put("type","text");
             String content = msg.substring(5,msg.length()-1);
-            jsonObject.put("content",content);
+            jsonObject.put("content",MessageTools.Base64Encode(content));
 
             jsonArray.put(jsonObject);
             return jsonArray;
