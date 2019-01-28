@@ -11,7 +11,7 @@ public class Packer_Info extends Packer {
 
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put("version", PackVersion);
+            jsonObject.put("version", MessagePackType.PackVersion);
             jsonObject.put("type", MessagePackType.INFO);
             jsonObject.put("event", eventType);
             jsonObject.put("sender", MessageTools.Base64Encode(player.getName()));
@@ -27,7 +27,7 @@ public class Packer_Info extends Packer {
 
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put("version", PackVersion);
+            jsonObject.put("version", MessagePackType.PackVersion);
             jsonObject.put("type", MessagePackType.INFO);
             jsonObject.put("event", eventType);
             jsonObject.put("sender", MessageTools.Base64Encode(player.getName()));

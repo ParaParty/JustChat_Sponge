@@ -12,10 +12,10 @@ public class Packer_Registration extends Packer  {
     public Packer_Registration(Settings config){
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put("version", PackVersion);
+            jsonObject.put("version", MessagePackType.PackVersion);
             jsonObject.put("type", MessagePackType.REGISTRATION);
             jsonObject.put("identity", MessagePackType.REGISTRATION_Identity);
-            jsonObject.put("ID", config.getGeneral().server().ID() );
+            jsonObject.put("ID", MessageTools.Base64Encode(config.getGeneral().server().ID()) );
             this.MSG = jsonObject.toString();
         } catch (JSONException e) {
             e.printStackTrace();

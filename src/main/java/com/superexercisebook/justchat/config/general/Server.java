@@ -17,6 +17,9 @@ public class Server {
     @Setting(comment = "The ID of this console")
     private String ID=UUID.randomUUID().toString();
 
+    @Setting(comment = "Pulse Interval in SECONDS")
+    private int pulseInterval=20;
+
     public String ip(){ return ip; }
 
     public int port(){
@@ -24,5 +27,7 @@ public class Server {
     }
 
     public String ID(){ return ID; }
+
+    public int pulseInterval(){ return pulseInterval; }
 
 }

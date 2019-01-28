@@ -32,7 +32,7 @@ import org.spongepowered.api.plugin.Plugin;
 public class Justchat {
 
     JustchatClient client;
-    Settings config;
+    com.superexercisebook.justchat.Settings config;
 
 
     @Inject
@@ -46,7 +46,7 @@ public class Justchat {
     public void onServerStart(GameStartedServerEvent event) {
         logger.info("JustChat with your friends.");
 
-        config = new Settings(logger,defaultConfigDir);
+        config = new com.superexercisebook.justchat.Settings(logger,defaultConfigDir);
 
         client = new JustchatClient();
         client.logger=logger;
@@ -60,7 +60,7 @@ public class Justchat {
         return logger;
     }
 
-    public Settings getConfigManager(){
+    public com.superexercisebook.justchat.Settings getConfigManager(){
         return config;
     }
 

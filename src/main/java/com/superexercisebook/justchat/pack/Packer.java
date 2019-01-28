@@ -7,7 +7,6 @@ import java.nio.ByteOrder;
 import java.nio.charset.Charset;
 
 public class Packer implements ISendable {
-    public static int PackVersion=3;
     String MSG = "";
 
     final static byte[] MessageHeader = {0x11,0x45,0x14};
