@@ -34,7 +34,7 @@ public class Packer_Chat extends Packer {
 
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put("version", PackVersion);
+            jsonObject.put("version", MessagePackType.PackVersion);
             jsonObject.put("type", MessagePackType.MESSAGE);
             jsonObject.put("world", MessageTools.Base64Encode(player.getWorld().getName()));
             jsonObject.put("world_display", MessageTools.Base64Encode(player.getWorld().getName()));

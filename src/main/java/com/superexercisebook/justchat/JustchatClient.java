@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import com.superexercisebook.justchat.pack.MessagePackType;
 import com.superexercisebook.justchat.pack.Packer;
 import com.superexercisebook.justchat.pack.MessageTools;
+import com.superexercisebook.justchat.pack.Packer_Pulse;
 import com.xuhao.didi.core.pojo.OriginalData;
 import com.xuhao.didi.core.protocol.IReaderProtocol;
 import com.xuhao.didi.socket.client.sdk.OkSocket;
@@ -31,9 +32,11 @@ public class JustchatClient extends Thread{
     public IConnectionManager clientManager;
     private OkSocketOptions.Builder okOptionsBuilder;
 
-
     public Logger logger;
     public Settings config;
+
+
+    private Packer_Pulse mPulseData = new Packer_Pulse();
 
     @Override
     public void run(){
@@ -100,6 +103,13 @@ public class JustchatClient extends Thread{
             public void onSocketConnectionSuccess(ConnectionInfo info, String action) {
                 logger.info("connected.");
 
+                if (config.getGeneral().server().pulseInterval()>0) {
+                    okOptionsBuilder.setPulseFrequency(config.getGeneral().server().pulseInterval()*1000);
+                    clientManager.getPulseManager().setPulseSendable(mPulseData).pulse();
+                }
+
+
+
             }
 
             @Override
@@ -118,10 +128,14 @@ public class JustchatClient extends Thread{
 
                         JSONObject jsonObject = new JSONObject(str);
                         int version = jsonObject.getInt("version");
-                        if (version== Packer.PackVersion) {
+                        if (version== MessagePackType.PackVersion) {
                             int messageType = jsonObject.getInt("type");
 
-                            if (messageType== MessagePackType.MESSAGE) {
+                            if (messageType== MessagePackType.PULSE){
+                                clientManager.getPulseManager().feed();
+                            } else if (messageType== MessagePackType.INFO){
+
+                            } else if (messageType== MessagePackType.MESSAGE) {
 
                                 String sender = MessageTools.Base64Decode(jsonObject.getString("sender"));
                                 MessageContentUnpacker content = new MessageContentUnpacker(jsonObject.getJSONArray("content"));
@@ -141,7 +155,7 @@ public class JustchatClient extends Thread{
                             }
                         } else
                         {
-                            if (version> Packer.PackVersion) {
+                            if (version> MessagePackType.PackVersion) {
                                 logger.info("Received a message made by a higher-version server.");
                             } else {
                                 logger.info("Received a message made by a lower-version server.");
