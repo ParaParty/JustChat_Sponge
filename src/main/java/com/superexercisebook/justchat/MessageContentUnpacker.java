@@ -51,7 +51,7 @@ public class MessageContentUnpacker {
                             "TARGET",MessageTools.Base64Decode(obj.getString("target"))
                     )).build();
                     result.append(t);
-                    //logger.info(t.toString());java
+                    //logger.info(t.toString());
                 }
                 else
                 if (obj.getString("function").equals("CQ:image")){
