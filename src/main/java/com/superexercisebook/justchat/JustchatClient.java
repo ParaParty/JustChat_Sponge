@@ -138,14 +138,17 @@ public class JustchatClient extends Thread{
                             } else if (messageType== MessagePackType.MESSAGE) {
 
                                 String sender = MessageTools.Base64Decode(jsonObject.getString("sender"));
+                                String world = jsonObject.getString("world");
+                                String world_display = MessageTools.Base64Decode(jsonObject.getString("world_display"));
                                 MessageContentUnpacker content = new MessageContentUnpacker(jsonObject.getJSONArray("content"));
                                 content.textConfig = config.getText();
                                 content.logger = logger;
 
                                 Text Content = config.getText().MSGFormat_overview().apply(ImmutableMap.of(
                                         "SENDER",sender,
+                                        "WORLD",world,
+                                        "WORLD_DISPLAY",world_display,
                                         "BODY",content.toText()
-
                                 )).build();
 
                                 MessageChannel.TO_ALL.send(Content);
