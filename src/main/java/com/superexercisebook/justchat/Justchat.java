@@ -20,7 +20,7 @@ import org.spongepowered.api.plugin.Plugin;
 @Plugin(
         id = "justchat",
         name = "JustChat",
-        description = "test",
+        description = "JustChat with your friends",
         url = "http://superexercisebook.com",
         authors = {
                 "Eric_Lian"
