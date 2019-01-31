@@ -14,8 +14,11 @@ public class Server {
     @Setting(comment = "The Port number of JustChat server")
     private int port=54321;
 
-    @Setting(comment = "The ID of this console")
+    @Setting(comment = "The ID of this terminal")
     private String ID=UUID.randomUUID().toString();
+
+    @Setting(comment = "The name of this terminal")
+    private String name= "A Sponge Server";
 
     @Setting(comment = "Pulse Interval in SECONDS")
     private int pulseInterval=20;
@@ -27,6 +30,8 @@ public class Server {
     }
 
     public String ID(){ return ID; }
+
+    public String name(){ return name; }
 
     public int pulseInterval(){ return pulseInterval; }
 

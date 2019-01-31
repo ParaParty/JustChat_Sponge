@@ -15,7 +15,8 @@ public class Packer_Registration extends Packer  {
             jsonObject.put("version", MessagePackType.PackVersion);
             jsonObject.put("type", MessagePackType.REGISTRATION);
             jsonObject.put("identity", MessagePackType.REGISTRATION_Identity);
-            jsonObject.put("ID", MessageTools.Base64Encode(config.getGeneral().server().ID()) );
+            jsonObject.put("id", MessageTools.Base64Encode(config.getGeneral().server().ID()) );
+            jsonObject.put("name", MessageTools.Base64Encode(config.getGeneral().server().name()) );
             this.MSG = jsonObject.toString();
         } catch (JSONException e) {
             e.printStackTrace();
