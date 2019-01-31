@@ -24,7 +24,7 @@ public class Locale {
             arg("CONTENT")
     );
 
-    @Setting(comment = "The normal text display format")
+    @Setting(comment = "The URL text display format")
     private TextTemplate MSGFormat_URL = of(
             arg("CONTENT").color(TextColors.BLUE).style(TextStyles.UNDERLINE)
     );
