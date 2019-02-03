@@ -11,6 +11,7 @@ import org.spongepowered.api.config.ConfigDir;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.entity.DamageEntityEvent;
+import org.spongepowered.api.event.entity.DestructEntityEvent;
 import org.spongepowered.api.event.filter.cause.First;
 import org.spongepowered.api.event.game.state.GameStartedServerEvent;
 import org.spongepowered.api.event.message.MessageChannelEvent;
@@ -86,7 +87,7 @@ public class Justchat {
         client.clientManager.send(Pack);
     }
 
-
+/*
     @Listener
     public void onPlayerDamage(DamageEntityEvent event) {
         if ((event.getTargetEntity() instanceof Player) && (event.willCauseDeath())) {
@@ -96,6 +97,15 @@ public class Justchat {
             client.clientManager.send(Pack);
         }
     }
+*/
 
-
+    @Listener
+    public void onPlayerDead(DestructEntityEvent.Death event) {
+        if (event.getTargetEntity() instanceof Player) {
+            Player player = (Player) event.getTargetEntity();
+            //Cause cause = event.getCause();
+            Packer_Info Pack = new Packer_Info(MessagePackType.INFO_EventType_PlayerDead, player, event.getOriginalMessage().toPlain());
+            client.clientManager.send(Pack);
+        }
+    }
 }
