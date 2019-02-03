@@ -15,17 +15,13 @@ public class Packer_Chat extends Packer {
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("type","text");
-            String content = msg.substring(5,msg.length()-1);
-            jsonObject.put("content",MessageTools.Base64Encode(content));
-
+            jsonObject.put("content",MessageTools.Base64Encode(msg));
             jsonArray.put(jsonObject);
             return jsonArray;
-
         } catch (JSONException e) {
             e.printStackTrace();
             return null;
         }
-
     }
 
 
@@ -39,7 +35,7 @@ public class Packer_Chat extends Packer {
             jsonObject.put("world", MessageTools.Base64Encode(player.getWorld().getName()));
             jsonObject.put("world_display", MessageTools.Base64Encode(player.getWorld().getName()));
             jsonObject.put("sender", MessageTools.Base64Encode(player.getName()));
-            jsonObject.put("content",ContentPacker(chatEvent.getRawMessage().toString()));
+            jsonObject.put("content",ContentPacker(chatEvent.getRawMessage().toPlain()));
             this.MSG = jsonObject.toString();
         } catch (JSONException e) {
             e.printStackTrace();
