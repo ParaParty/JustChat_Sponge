@@ -1,10 +1,7 @@
 package com.superexercisebook.justchat;
 
 import com.google.common.collect.ImmutableMap;
-import com.superexercisebook.justchat.pack.MessagePackType;
-import com.superexercisebook.justchat.pack.Packer;
-import com.superexercisebook.justchat.pack.MessageTools;
-import com.superexercisebook.justchat.pack.Packer_Pulse;
+import com.superexercisebook.justchat.pack.*;
 import com.xuhao.didi.core.pojo.OriginalData;
 import com.xuhao.didi.core.protocol.IReaderProtocol;
 import com.xuhao.didi.socket.client.sdk.OkSocket;
@@ -108,8 +105,8 @@ public class JustchatClient extends Thread{
                     clientManager.getPulseManager().setPulseSendable(mPulseData).pulse();
                 }
 
-
-
+                Packer_Registration Pack = new Packer_Registration(config);
+                clientManager.send(Pack);
             }
 
             @Override
@@ -144,7 +141,7 @@ public class JustchatClient extends Thread{
                                 content.textConfig = config.getText();
                                 content.logger = logger;
 
-                                Text Content = config.getText().MSGFormat_overview().apply(ImmutableMap.of(
+                                Text Content = config.getText().messageFormat().overview().apply(ImmutableMap.of(
                                         "SENDER",sender,
                                         "WORLD",world,
                                         "WORLD_DISPLAY",world_display,
