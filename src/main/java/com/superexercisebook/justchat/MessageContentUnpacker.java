@@ -61,7 +61,7 @@ public class MessageContentUnpacker {
                                     replace("{EXTENSION}",obj.getString("extension"));
                             URL url = new URL(strUrl);
                             ClickAction a = TextActions.openUrl(url);
-                            Text t = textConfig.messageFormat().facee().apply(ImmutableMap.of(
+                            Text t = textConfig.messageFormat().face().apply(ImmutableMap.of(
                                     "CONTENT", MessageTools.Base64Decode(obj.getString("content"))
                             )).onClick(a).build();
                             result.append(t);

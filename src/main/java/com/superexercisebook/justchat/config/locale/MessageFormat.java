@@ -80,9 +80,7 @@ public class MessageFormat {
         return faceURL;
     }
 
-    public TextTemplate facee(){
-        return at;
-    }
+    public TextTemplate face(){ return face; }
 
     public TextTemplate image() {
         return image;
