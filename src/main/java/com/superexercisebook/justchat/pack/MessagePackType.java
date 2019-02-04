@@ -9,6 +9,10 @@ public class MessagePackType {
     public final static int INFO = 100;
     public final static int MESSAGE = 101;
 
+    public final static int PlayerList = 200;
+    public final static int PlayerListRequest = 0;
+    public final static int PlayerListResponse = 1;
+
     public final static int REGISTRATION_Identity = 0;
 
     public final static int INFO_EventType_Join = 1;

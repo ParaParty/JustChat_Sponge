@@ -150,7 +150,12 @@ public class JustchatClient extends Thread{
 
                                 MessageChannel.TO_ALL.send(Content);
 
-                            } else {
+                            } else if ((messageType==MessagePackType.PlayerList) && (jsonObject.getInt("subtype")==MessagePackType.PlayerListRequest)) {
+
+                                Packer_PlayerList pack = new Packer_PlayerList();
+                                clientManager.send(pack);
+
+                            }else {
                                 logger.info("Received a message with an unrecognized type.");
                             }
                         } else
