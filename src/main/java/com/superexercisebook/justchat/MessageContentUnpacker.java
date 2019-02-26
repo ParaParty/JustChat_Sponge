@@ -12,6 +12,7 @@ import org.spongepowered.api.text.action.ClickAction;
 import org.spongepowered.api.text.action.TextActions;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 
@@ -94,8 +95,13 @@ public class MessageContentUnpacker {
                                     "CONTENT", MessageTools.Base64Decode(obj.getString("content"))
                             )).onClick(a).build();
                             result.append(t);
-                        } catch (IOException e) {
-                            logger.error("Received a message with a invalid share declaration", e);
+                        }
+                        catch (IOException e){
+                            Text t = textConfig.messageFormat().share().apply(ImmutableMap.of(
+                                    "TITLE", MessageTools.Base64Decode(obj.getString("title")),
+                                    "CONTENT", MessageTools.Base64Decode(obj.getString("content"))
+                            )).build();
+                            result.append(t);
                         }
                     } else if (function.equals("CQ:rich")) {
                         try {
@@ -106,7 +112,10 @@ public class MessageContentUnpacker {
                             )).onClick(a).build();
                             result.append(t);
                         } catch (IOException e) {
-                            logger.error("Received a message with a invalid rich content declaration", e);
+                            Text t = textConfig.messageFormat().rich().apply(ImmutableMap.of(
+                                    "TEXT", MessageTools.Base64Decode(obj.getString("text"))
+                            )).build();
+                            result.append(t);
                         }
                     }
                 }
