@@ -8,7 +8,6 @@ import org.json.JSONObject;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.charset.Charset;
-import java.util.Random;
 
 public class Packer_Pulse implements IPulseSendable {
     //final static byte[] MessageHeader = {(byte)0x70,(byte)0x93,(byte)0x94};

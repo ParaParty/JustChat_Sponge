@@ -1,6 +1,7 @@
 package com.superexercisebook.justchat.config.locale;
 
 import ninja.leaping.configurate.objectmapping.Setting;
+import ninja.leaping.configurate.objectmapping.serialize.ConfigSerializable;
 import org.spongepowered.api.text.TextTemplate;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.text.format.TextStyles;
@@ -8,6 +9,7 @@ import org.spongepowered.api.text.format.TextStyles;
 import static org.spongepowered.api.text.TextTemplate.arg;
 import static org.spongepowered.api.text.TextTemplate.of;
 
+@ConfigSerializable
 public class MessageFormat {
     @Setting(comment = "The overview output format.")
     private TextTemplate overview = of(
