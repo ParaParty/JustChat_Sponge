@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.spongepowered.api.config.ConfigDir;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
+import org.spongepowered.api.event.Order;
 import org.spongepowered.api.event.entity.DamageEntityEvent;
 import org.spongepowered.api.event.entity.DestructEntityEvent;
 import org.spongepowered.api.event.filter.cause.First;
@@ -65,15 +66,17 @@ public class Justchat {
         return config;
     }
 
-    @Listener
+    @Listener(order = Order.POST)
     public void onChat(MessageChannelEvent.Chat chatEvent, @First Player player) {
-        //Text MSG = chatEvent.getRawMessage();
-        //logger.info(MSG.toString());
-        Packer_Chat Pack = new Packer_Chat(chatEvent,player);
-        client.clientManager.send(Pack);
+        if ((!chatEvent.isCancelled()) && (!chatEvent.isMessageCancelled())) {
+            //Text MSG = chatEvent.getRawMessage();
+            //logger.info(MSG.toString());
+            Packer_Chat Pack = new Packer_Chat(chatEvent, player);
+            client.clientManager.send(Pack);
+        }
     }
 
-    @Listener
+    @Listener(order = Order.DEFAULT)
     public void onPlayerLogin(ClientConnectionEvent.Join loginEvent, @First Player player){
         Packer_Info Pack = new Packer_Info(MessagePackType.INFO_EventType_Join,player);
         client.clientManager.send(Pack);
@@ -81,7 +84,7 @@ public class Justchat {
     }
 
 
-    @Listener
+    @Listener(order = Order.DEFAULT)
     public void onPlayerDisconnect(ClientConnectionEvent.Disconnect disconnectEvent,  @First Player player){
         Packer_Info Pack = new Packer_Info(MessagePackType.INFO_EventType_Disconnect,player);
         client.clientManager.send(Pack);
@@ -99,9 +102,9 @@ public class Justchat {
     }
 */
 
-    @Listener
+    @Listener(order = Order.POST)
     public void onPlayerDead(DestructEntityEvent.Death event) {
-        if (event.getTargetEntity() instanceof Player) {
+        if ((!event.isCancelled()) &&  (event.getTargetEntity() instanceof Player)) {
             Player player = (Player) event.getTargetEntity();
             //Cause cause = event.getCause();
             Packer_Info Pack = new Packer_Info(MessagePackType.INFO_EventType_PlayerDead, player, event.getOriginalMessage().toPlain());
