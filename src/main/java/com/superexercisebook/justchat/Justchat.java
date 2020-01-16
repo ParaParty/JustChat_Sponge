@@ -18,6 +18,7 @@ import org.spongepowered.api.event.game.state.GameStartedServerEvent;
 import org.spongepowered.api.event.message.MessageChannelEvent;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
 import org.spongepowered.api.plugin.Plugin;
+import org.spongepowered.api.text.channel.MessageChannel;
 
 @Plugin(
         id = "justchat",
@@ -68,12 +69,13 @@ public class Justchat {
 
     @Listener(order = Order.POST)
     public void onChat(MessageChannelEvent.Chat chatEvent, @First Player player) {
-        if ((!chatEvent.isCancelled()) && (!chatEvent.isMessageCancelled())) {
+        //if (chatEvent.getChannel().equals(MessageChannel.TO_ALL)){
+        //if ((!chatEvent.isCancelled()) && (!chatEvent.isMessageCancelled())) {
             //Text MSG = chatEvent.getRawMessage();
             //logger.info(MSG.toString());
             Packer_Chat Pack = new Packer_Chat(chatEvent, player);
             client.clientManager.send(Pack);
-        }
+        //}
     }
 
     @Listener(order = Order.DEFAULT)
@@ -104,7 +106,7 @@ public class Justchat {
 
     @Listener(order = Order.POST)
     public void onPlayerDead(DestructEntityEvent.Death event) {
-        if ((!event.isCancelled()) &&  (event.getTargetEntity() instanceof Player)) {
+        if ((!event.isCancelled()) && (event.getTargetEntity() instanceof Player)) {
             Player player = (Player) event.getTargetEntity();
             //Cause cause = event.getCause();
             Packer_Info Pack = new Packer_Info(MessagePackType.INFO_EventType_PlayerDead, player, event.getOriginalMessage().toPlain());

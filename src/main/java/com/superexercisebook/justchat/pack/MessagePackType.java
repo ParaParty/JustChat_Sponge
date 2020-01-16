@@ -2,7 +2,7 @@ package com.superexercisebook.justchat.pack;
 
 
 public class MessagePackType {
-    public static int PackVersion=3;
+    public static int PackVersion = 4;
 
     public final static int PULSE = 0;
     public final static int REGISTRATION = 1;
