@@ -152,7 +152,11 @@ public class JustchatClient extends Thread{
 
                             } else if ((messageType==MessagePackType.PlayerList) && (jsonObject.getInt("subtype")==MessagePackType.PlayerListRequest)) {
 
-                                Packer_PlayerList pack = new Packer_PlayerList();
+                                Packer_PlayerList pack = new Packer_PlayerList(
+                                        jsonObject.getString("sender"),
+                                        jsonObject.getString("world"),
+                                        jsonObject.getString("world_display")
+                                );
                                 clientManager.send(pack);
 
                             }else {

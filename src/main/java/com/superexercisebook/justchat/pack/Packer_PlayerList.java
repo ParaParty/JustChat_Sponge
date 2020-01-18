@@ -33,7 +33,7 @@ public class Packer_PlayerList extends Packer {
         }
     }
 
-    public Packer_PlayerList(){
+    public Packer_PlayerList(String sender, String world, String world_display){
         getPlayerList();
         JSONObject jsonObject = new JSONObject();
         try {
@@ -42,7 +42,10 @@ public class Packer_PlayerList extends Packer {
             jsonObject.put("subtype", MessagePackType.PlayerListResponse);
             jsonObject.put("max", Sponge.getServer().getMaxPlayers());
             jsonObject.put("count", count);
-            jsonObject.put("playerlist",content);
+            jsonObject.put("player_list",content);
+            jsonObject.put("sender",sender);
+            jsonObject.put("world",world);
+            jsonObject.put("world_display",world_display);
             this.MSG = jsonObject.toString();
         } catch (JSONException e) {
             e.printStackTrace();
