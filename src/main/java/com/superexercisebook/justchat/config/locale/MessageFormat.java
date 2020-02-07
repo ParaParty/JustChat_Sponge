@@ -35,7 +35,7 @@ public class MessageFormat {
     );
 
     @Setting(comment = "The face display format.")
-    private String faceURL = "https://exercisebook.github.io/JustChat/resource/CQ/face/{ID}.{EXTENSION}";
+    private String faceURL = "https://exercisebook.github.io/JustChat/resource/CQ/face/{ID}.gif";
 
     @Setting(comment = "The face display format.")
     private TextTemplate face = of(

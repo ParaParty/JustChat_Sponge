@@ -58,8 +58,7 @@ public class MessageContentUnpacker {
                     } else if (function.equals("CQ:face")) {
                         try {
                             String strUrl = textConfig.messageFormat().faceURL().
-                                    replace("{ID}",String.valueOf(obj.getInt("id"))).
-                                    replace("{EXTENSION}",obj.getString("extension"));
+                                    replace("{ID}",String.valueOf(obj.getInt("id")));
                             URL url = new URL(strUrl);
                             ClickAction a = TextActions.openUrl(url);
                             Text t = textConfig.messageFormat().face().apply(ImmutableMap.of(
