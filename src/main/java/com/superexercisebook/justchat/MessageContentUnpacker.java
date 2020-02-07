@@ -48,108 +48,120 @@ public class MessageContentUnpacker {
                 } else if (type.equals("cqcode")) {
                     String function = obj.getString("function");
 
-                    if (function.equals("CQ:at")) {
-
-                        Text t = textConfig.messageFormat().at().apply(ImmutableMap.of(
-                                "TARGET", MessageTools.Base64Decode(obj.getString("target"))
-                        )).build();
-                        result.append(t);
-                        //logger.info(t.toString());
-                    } else if (function.equals("CQ:face")) {
-                        URL url = null;
-                        try {
-                            String strUrl = textConfig.messageFormat().faceURL().
-                                    replace("{ID}",String.valueOf(obj.getInt("id")));
-                            url = new URL(strUrl);
-                        } catch (Exception ignored) {
-
-                        }
-
-                        Text t = null;
-                        if (url == null) {
-                            t = textConfig.messageFormat().face().apply(ImmutableMap.of(
-                                    "CONTENT", MessageTools.Base64Decode(obj.getString("content"))
+                    switch (function) {
+                        case "CQ:at": {
+                            Text t = textConfig.messageFormat().at().apply(ImmutableMap.of(
+                                    "TARGET", MessageTools.Base64Decode(obj.getString("target"))
                             )).build();
-
-                        } else {
-                            ClickAction a = TextActions.openUrl(url);
-                            t = textConfig.messageFormat().face().apply(ImmutableMap.of(
-                                    "CONTENT", MessageTools.Base64Decode(obj.getString("content"))
-                            )).onClick(a).build();
+                            result.append(t);
+                            //logger.info(t.toString());
+                            break;
                         }
-                        result.append(t);
+                        case "CQ:face": {
+                            URL url = null;
+                            try {
+                                String strUrl = textConfig.messageFormat().faceURL().
+                                        replace("{ID}", String.valueOf(obj.getInt("id")));
+                                url = new URL(strUrl);
+                            } catch (Exception ignored) {
 
-                    } else if (function.equals("CQ:image")) {
-                        URL url = null;
-                        try {
-                            url = new URL(obj.getString("url"));
-                        } catch (Exception ignored) {
+                            }
 
+                            Text t = null;
+                            if (url == null) {
+                                t = textConfig.messageFormat().face().apply(ImmutableMap.of(
+                                        "CONTENT", MessageTools.Base64Decode(obj.getString("content"))
+                                )).build();
+
+                            } else {
+                                ClickAction a = TextActions.openUrl(url);
+                                t = textConfig.messageFormat().face().apply(ImmutableMap.of(
+                                        "CONTENT", MessageTools.Base64Decode(obj.getString("content"))
+                                )).onClick(a).build();
+                            }
+                            result.append(t);
+
+                            break;
                         }
+                        case "CQ:image": {
+                            URL url = null;
+                            try {
+                                url = new URL(obj.getString("url"));
+                            } catch (Exception ignored) {
 
-                        Text t;
-                        if (url == null) {
-                            t = textConfig.messageFormat().image().apply(ImmutableMap.of(
-                                    "CONTENT", MessageTools.Base64Decode(obj.getString("content"))
+                            }
+
+                            Text t;
+                            if (url == null) {
+                                t = textConfig.messageFormat().image().apply(ImmutableMap.of(
+                                        "CONTENT", MessageTools.Base64Decode(obj.getString("content"))
+                                )).build();
+
+                            } else {
+                                ClickAction a = TextActions.openUrl(url);
+                                t = textConfig.messageFormat().image().apply(ImmutableMap.of(
+                                        "CONTENT", MessageTools.Base64Decode(obj.getString("content"))
+                                )).onClick(a).build();
+                            }
+
+                            result.append(t);
+                            break;
+                        }
+                        case "CQ:hb": {
+                            Text t = textConfig.messageFormat().redEnvelope().apply(ImmutableMap.of(
+                                    "TITLE", Text.of(MessageTools.Base64Decode(obj.getString("title")))
                             )).build();
-
-                        } else {
-                            ClickAction a = TextActions.openUrl(url);
-                            t = textConfig.messageFormat().image().apply(ImmutableMap.of(
-                                    "CONTENT", MessageTools.Base64Decode(obj.getString("content"))
-                            )).onClick(a).build();
+                            result.append(t);
+                            break;
                         }
+                        case "CQ:share": {
+                            URL url = null;
+                            try {
+                                url = new URL(MessageTools.Base64Decode(obj.getString("url")));
+                            } catch (Exception ignored) {
 
-                        result.append(t);
-                    } else if (function.equals("CQ:hb")) {
-                        Text t = textConfig.messageFormat().redEnvelope().apply(ImmutableMap.of(
-                                "TITLE", Text.of(MessageTools.Base64Decode(obj.getString("title")))
-                        )).build();
-                        result.append(t);
-                    } else if (function.equals("CQ:share")) {
-                        URL url = null;
-                        try {
-                            url = new URL(MessageTools.Base64Decode(obj.getString("url")));
-                        } catch (Exception ignored) {
+                            }
 
+                            Text t;
+                            if (url == null) {
+                                t = textConfig.messageFormat().share().apply(ImmutableMap.of(
+                                        "TITLE", MessageTools.Base64Decode(obj.getString("title")),
+                                        "CONTENT", MessageTools.Base64Decode(obj.getString("content"))
+                                )).build();
+                            } else {
+                                ClickAction a = TextActions.openUrl(url);
+                                t = textConfig.messageFormat().share().apply(ImmutableMap.of(
+                                        "TITLE", MessageTools.Base64Decode(obj.getString("title")),
+                                        "CONTENT", MessageTools.Base64Decode(obj.getString("content"))
+                                )).onClick(a).build();
+                            }
+
+                            result.append(t);
+                            break;
                         }
+                        case "CQ:rich": {
+                            URL url = null;
+                            try {
+                                url = new URL(MessageTools.Base64Decode(obj.getString("url")));
+                            } catch (Exception ignored) {
 
-                        Text t;
-                        if (url == null) {
-                            t = textConfig.messageFormat().share().apply(ImmutableMap.of(
-                                    "TITLE", MessageTools.Base64Decode(obj.getString("title")),
-                                    "CONTENT", MessageTools.Base64Decode(obj.getString("content"))
-                            )).build();
-                        } else {
-                            ClickAction a = TextActions.openUrl(url);
-                            t = textConfig.messageFormat().share().apply(ImmutableMap.of(
-                                    "TITLE", MessageTools.Base64Decode(obj.getString("title")),
-                                    "CONTENT", MessageTools.Base64Decode(obj.getString("content"))
-                            )).onClick(a).build();
+                            }
+
+                            Text t;
+                            if (url == null) {
+                                t = textConfig.messageFormat().rich().apply(ImmutableMap.of(
+                                        "TEXT", MessageTools.Base64Decode(obj.getString("text"))
+                                )).build();
+                            } else {
+                                ClickAction a = TextActions.openUrl(url);
+                                t = textConfig.messageFormat().rich().apply(ImmutableMap.of(
+                                        "TEXT", MessageTools.Base64Decode(obj.getString("text"))
+                                )).onClick(a).build();
+                            }
+
+                            result.append(t);
+                            break;
                         }
-
-                        result.append(t);
-                    } else if (function.equals("CQ:rich")) {
-                        URL url = null;
-                        try {
-                            url = new URL(MessageTools.Base64Decode(obj.getString("url")));
-                        } catch (Exception ignored) {
-
-                        }
-
-                        Text t;
-                        if (url == null) {
-                            t = textConfig.messageFormat().rich().apply(ImmutableMap.of(
-                                    "TEXT", MessageTools.Base64Decode(obj.getString("text"))
-                            )).build();
-                        } else {
-                            ClickAction a = TextActions.openUrl(url);
-                            t = textConfig.messageFormat().rich().apply(ImmutableMap.of(
-                                    "TEXT", MessageTools.Base64Decode(obj.getString("text"))
-                            )).onClick(a).build();
-                        }
-
-                        result.append(t);
                     }
                 }
             }
