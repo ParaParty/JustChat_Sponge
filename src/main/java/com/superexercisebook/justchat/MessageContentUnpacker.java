@@ -56,66 +56,100 @@ public class MessageContentUnpacker {
                         result.append(t);
                         //logger.info(t.toString());
                     } else if (function.equals("CQ:face")) {
+                        URL url = null;
                         try {
                             String strUrl = textConfig.messageFormat().faceURL().
                                     replace("{ID}",String.valueOf(obj.getInt("id")));
-                            URL url = new URL(strUrl);
-                            ClickAction a = TextActions.openUrl(url);
-                            Text t = textConfig.messageFormat().face().apply(ImmutableMap.of(
-                                    "CONTENT", MessageTools.Base64Decode(obj.getString("content"))
-                            )).onClick(a).build();
-                            result.append(t);
-                        } catch (IOException e) {
-                            logger.error("Received a message with a invalid rich content declaration", e);
-                        }
-                    } else if (function.equals("CQ:image")) {
-                        try {
-                            URL url = new URL(obj.getString("url"));
-                            ClickAction a = TextActions.openUrl(url);
+                            url = new URL(strUrl);
+                        } catch (Exception ignored) {
 
-                            Text t = textConfig.messageFormat().image().apply(ImmutableMap.of(
+                        }
+
+                        Text t = null;
+                        if (url == null) {
+                            t = textConfig.messageFormat().face().apply(ImmutableMap.of(
+                                    "CONTENT", MessageTools.Base64Decode(obj.getString("content"))
+                            )).build();
+
+                        } else {
+                            ClickAction a = TextActions.openUrl(url);
+                            t = textConfig.messageFormat().face().apply(ImmutableMap.of(
                                     "CONTENT", MessageTools.Base64Decode(obj.getString("content"))
                             )).onClick(a).build();
-                            result.append(t);
-                        } catch (IOException e) {
-                            logger.error("Received a message with a invalid image declaration", e);
                         }
+                        result.append(t);
+
+                    } else if (function.equals("CQ:image")) {
+                        URL url = null;
+                        try {
+                            url = new URL(obj.getString("url"));
+                        } catch (Exception ignored) {
+
+                        }
+
+                        Text t;
+                        if (url == null) {
+                            t = textConfig.messageFormat().image().apply(ImmutableMap.of(
+                                    "CONTENT", MessageTools.Base64Decode(obj.getString("content"))
+                            )).build();
+
+                        } else {
+                            ClickAction a = TextActions.openUrl(url);
+                            t = textConfig.messageFormat().image().apply(ImmutableMap.of(
+                                    "CONTENT", MessageTools.Base64Decode(obj.getString("content"))
+                            )).onClick(a).build();
+                        }
+
+                        result.append(t);
                     } else if (function.equals("CQ:hb")) {
                         Text t = textConfig.messageFormat().redEnvelope().apply(ImmutableMap.of(
                                 "TITLE", Text.of(MessageTools.Base64Decode(obj.getString("title")))
                         )).build();
                         result.append(t);
                     } else if (function.equals("CQ:share")) {
+                        URL url = null;
                         try {
-                            URL url = new URL(MessageTools.Base64Decode(obj.getString("url")));
-                            ClickAction a = TextActions.openUrl(url);
-                            Text t = textConfig.messageFormat().share().apply(ImmutableMap.of(
-                                    "TITLE", MessageTools.Base64Decode(obj.getString("title")),
-                                    "CONTENT", MessageTools.Base64Decode(obj.getString("content"))
-                            )).onClick(a).build();
-                            result.append(t);
+                            url = new URL(MessageTools.Base64Decode(obj.getString("url")));
+                        } catch (Exception ignored) {
+
                         }
-                        catch (IOException e){
-                            Text t = textConfig.messageFormat().share().apply(ImmutableMap.of(
+
+                        Text t;
+                        if (url == null) {
+                            t = textConfig.messageFormat().share().apply(ImmutableMap.of(
                                     "TITLE", MessageTools.Base64Decode(obj.getString("title")),
                                     "CONTENT", MessageTools.Base64Decode(obj.getString("content"))
                             )).build();
-                            result.append(t);
+                        } else {
+                            ClickAction a = TextActions.openUrl(url);
+                            t = textConfig.messageFormat().share().apply(ImmutableMap.of(
+                                    "TITLE", MessageTools.Base64Decode(obj.getString("title")),
+                                    "CONTENT", MessageTools.Base64Decode(obj.getString("content"))
+                            )).onClick(a).build();
                         }
+
+                        result.append(t);
                     } else if (function.equals("CQ:rich")) {
+                        URL url = null;
                         try {
-                            URL url = new URL(MessageTools.Base64Decode(obj.getString("url")));
-                            ClickAction a = TextActions.openUrl(url);
-                            Text t = textConfig.messageFormat().rich().apply(ImmutableMap.of(
-                                    "TEXT", MessageTools.Base64Decode(obj.getString("text"))
-                            )).onClick(a).build();
-                            result.append(t);
-                        } catch (IOException e) {
-                            Text t = textConfig.messageFormat().rich().apply(ImmutableMap.of(
+                            url = new URL(MessageTools.Base64Decode(obj.getString("url")));
+                        } catch (Exception ignored) {
+
+                        }
+
+                        Text t;
+                        if (url == null) {
+                            t = textConfig.messageFormat().rich().apply(ImmutableMap.of(
                                     "TEXT", MessageTools.Base64Decode(obj.getString("text"))
                             )).build();
-                            result.append(t);
+                        } else {
+                            ClickAction a = TextActions.openUrl(url);
+                            t = textConfig.messageFormat().rich().apply(ImmutableMap.of(
+                                    "TEXT", MessageTools.Base64Decode(obj.getString("text"))
+                            )).onClick(a).build();
                         }
+
+                        result.append(t);
                     }
                 }
             }
