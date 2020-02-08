@@ -13,9 +13,9 @@ import static org.spongepowered.api.text.TextTemplate.of;
 public class MessageFormat {
     @Setting(comment = "The overview output format.")
     private TextTemplate overview = of(
-            "[*]",TextColors.DARK_GREEN,
+            "[*]", TextColors.DARK_GREEN,
             arg("SENDER").color(TextColors.DARK_GREEN),
-            TextColors.RESET,": ",
+            TextColors.RESET, ": ",
             arg("BODY")
     );
 
@@ -62,27 +62,29 @@ public class MessageFormat {
             arg("TEXT").color(TextColors.BLUE).style(TextStyles.UNDERLINE)
     );
 
-    public TextTemplate overview(){
+    public TextTemplate overview() {
         return overview;
     }
 
-    public TextTemplate text(){
+    public TextTemplate text() {
         return text;
     }
 
-    public TextTemplate URL(){
+    public TextTemplate URL() {
         return URL;
     }
 
-    public TextTemplate at(){
+    public TextTemplate at() {
         return at;
     }
 
-    public String faceURL(){
+    public String faceURL() {
         return faceURL;
     }
 
-    public TextTemplate face(){ return face; }
+    public TextTemplate face() {
+        return face;
+    }
 
     public TextTemplate image() {
         return image;

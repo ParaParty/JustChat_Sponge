@@ -9,30 +9,38 @@ import java.util.UUID;
 public class Server {
 
     @Setting(comment = "The IP address of JustChat server")
-    private String ip="127.0.0.1";
+    private String ip = "127.0.0.1";
 
     @Setting(comment = "The Port number of JustChat server")
-    private int port=54321;
+    private int port = 54321;
 
     @Setting(comment = "The ID of this terminal")
-    private String ID=UUID.randomUUID().toString();
+    private String ID = UUID.randomUUID().toString();
 
     @Setting(comment = "The name of this terminal")
-    private String name= "A Sponge Server";
+    private String name = "A Sponge Server";
 
     @Setting(comment = "Pulse Interval in SECONDS")
-    private int pulseInterval=20;
+    private int pulseInterval = 20;
 
-    public String ip(){ return ip; }
+    public String ip() {
+        return ip;
+    }
 
-    public int port(){
+    public int port() {
         return port;
     }
 
-    public String ID(){ return ID; }
+    public String ID() {
+        return ID;
+    }
 
-    public String name(){ return name; }
+    public String name() {
+        return name;
+    }
 
-    public int pulseInterval(){ return pulseInterval; }
+    public int pulseInterval() {
+        return pulseInterval;
+    }
 
 }

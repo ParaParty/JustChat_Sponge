@@ -1,4 +1,4 @@
-package com.superexercisebook.justchat;
+package com.superexercisebook.justchat.config;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -25,10 +25,9 @@ public class Settings {
 
     private final ConfigurationOptions options = getConfigurationOptions();
 
-    Settings(Logger logger, @ConfigDir(sharedRoot = false) Path dataFolder)
-    {
-        this.logger=logger;
-        this.dataFolder=dataFolder;
+    public Settings(Logger logger, @ConfigDir(sharedRoot = false) Path dataFolder) {
+        this.logger = logger;
+        this.dataFolder = dataFolder;
 
         try {
             logger.info(General.class.getDeclaredConstructor().toString());

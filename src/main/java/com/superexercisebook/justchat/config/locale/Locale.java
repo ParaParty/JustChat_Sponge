@@ -8,7 +8,7 @@ public class Locale {
     @Setting(comment = "Message Display Format")
     private MessageFormat messageFormat = new MessageFormat();
 
-    public MessageFormat messageFormat(){
+    public MessageFormat messageFormat() {
         return messageFormat;
     }
 

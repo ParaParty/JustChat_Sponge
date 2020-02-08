@@ -8,12 +8,11 @@ import ninja.leaping.configurate.objectmapping.serialize.ConfigSerializable;
 public class General {
 
     @Setting(comment = "The server config")
-    private Server server=new Server();
+    private Server server = new Server();
 
-    public Server server(){
+    public Server server() {
         return server;
     }
-
 
 
 }

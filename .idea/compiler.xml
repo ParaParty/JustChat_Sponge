@@ -4,6 +4,8 @@
     <bytecodeTargetLevel>
       <module name="JustChat_Client_Sponge_main" target="1.8" />
       <module name="JustChat_Client_Sponge_test" target="1.8" />
+      <module name="JustChat_Sponge.main" target="1.8" />
+      <module name="JustChat_Sponge.test" target="1.8" />
       <module name="JustChat_Sponge_main" target="1.8" />
       <module name="JustChat_Sponge_test" target="1.8" />
       <module name="MC_Sponge_JustChat_main" target="1.8" />
