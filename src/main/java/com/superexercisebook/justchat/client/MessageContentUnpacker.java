@@ -15,162 +15,188 @@ import java.net.URL;
 
 
 class MessageContentUnpacker {
-    JSONArray data;
+    private JSONArray data;
     Logger logger;
     Locale textConfig;
 
-    MessageContentUnpacker(JSONArray s){
+    MessageContentUnpacker(JSONArray s) {
         data = s;
     }
 
-    Text toText(){
+    Text toText() {
 
         try {
 
             Text.Builder result = Text.builder();
 
             for (int i = 0; i < data.length(); i++) {
+
                 JSONObject obj = data.getJSONObject(i);
                 String type = obj.getString("type");
-                //logger.info(obj.toString());
+
+                Text part = null;
 
                 if (type.equals("text")) {
-
-                    Text t = textConfig.messageFormat().text().apply(ImmutableMap.of(
-                            "CONTENT", Text.of(MessageTools.Base64Decode(obj.getString("content")))
-                    )).build();
-                    result.append(t);
-                    //logger.info(t.toString());
-
-
+                    part = unpackText(obj);
                 } else if (type.equals("cqcode")) {
-                    String function = obj.getString("function");
 
+                    String function = obj.getString("function");
                     switch (function) {
                         case "CQ:at": {
-                            Text t = textConfig.messageFormat().at().apply(ImmutableMap.of(
-                                    "TARGET", MessageTools.Base64Decode(obj.getString("target"))
-                            )).build();
-                            result.append(t);
-                            //logger.info(t.toString());
+                            part = unpackCQCodeAt(obj);
                             break;
                         }
                         case "CQ:face": {
-                            URL url = null;
-                            try {
-                                String strUrl = textConfig.messageFormat().faceURL().
-                                        replace("{ID}", String.valueOf(obj.getInt("id")));
-                                url = new URL(strUrl);
-                            } catch (Exception ignored) {
-
-                            }
-
-                            Text t = null;
-                            if (url == null) {
-                                t = textConfig.messageFormat().face().apply(ImmutableMap.of(
-                                        "CONTENT", MessageTools.Base64Decode(obj.getString("content"))
-                                )).build();
-
-                            } else {
-                                ClickAction a = TextActions.openUrl(url);
-                                t = textConfig.messageFormat().face().apply(ImmutableMap.of(
-                                        "CONTENT", MessageTools.Base64Decode(obj.getString("content"))
-                                )).onClick(a).build();
-                            }
-                            result.append(t);
-
+                            part = unpackCQCodeFace(obj);
                             break;
                         }
                         case "CQ:image": {
-                            URL url = null;
-                            try {
-                                url = new URL(obj.getString("url"));
-                            } catch (Exception ignored) {
-
-                            }
-
-                            Text t;
-                            if (url == null) {
-                                t = textConfig.messageFormat().image().apply(ImmutableMap.of(
-                                        "CONTENT", MessageTools.Base64Decode(obj.getString("content"))
-                                )).build();
-
-                            } else {
-                                ClickAction a = TextActions.openUrl(url);
-                                t = textConfig.messageFormat().image().apply(ImmutableMap.of(
-                                        "CONTENT", MessageTools.Base64Decode(obj.getString("content"))
-                                )).onClick(a).build();
-                            }
-
-                            result.append(t);
+                            part = unpackCQCodeImage(obj);
                             break;
                         }
                         case "CQ:hb": {
-                            Text t = textConfig.messageFormat().redEnvelope().apply(ImmutableMap.of(
-                                    "TITLE", Text.of(MessageTools.Base64Decode(obj.getString("title")))
-                            )).build();
-                            result.append(t);
+                            part = unpackCQCodeHB(obj);
                             break;
                         }
                         case "CQ:share": {
-                            URL url = null;
-                            try {
-                                url = new URL(MessageTools.Base64Decode(obj.getString("url")));
-                            } catch (Exception ignored) {
-
-                            }
-
-                            Text t;
-                            if (url == null) {
-                                t = textConfig.messageFormat().share().apply(ImmutableMap.of(
-                                        "TITLE", MessageTools.Base64Decode(obj.getString("title")),
-                                        "CONTENT", MessageTools.Base64Decode(obj.getString("content"))
-                                )).build();
-                            } else {
-                                ClickAction a = TextActions.openUrl(url);
-                                t = textConfig.messageFormat().share().apply(ImmutableMap.of(
-                                        "TITLE", MessageTools.Base64Decode(obj.getString("title")),
-                                        "CONTENT", MessageTools.Base64Decode(obj.getString("content"))
-                                )).onClick(a).build();
-                            }
-
-                            result.append(t);
+                            part = unpackCQCodeShare(obj);
                             break;
                         }
                         case "CQ:rich": {
-                            URL url = null;
-                            try {
-                                url = new URL(MessageTools.Base64Decode(obj.getString("url")));
-                            } catch (Exception ignored) {
-
-                            }
-
-                            Text t;
-                            if (url == null) {
-                                t = textConfig.messageFormat().rich().apply(ImmutableMap.of(
-                                        "TEXT", MessageTools.Base64Decode(obj.getString("text"))
-                                )).build();
-                            } else {
-                                ClickAction a = TextActions.openUrl(url);
-                                t = textConfig.messageFormat().rich().apply(ImmutableMap.of(
-                                        "TEXT", MessageTools.Base64Decode(obj.getString("text"))
-                                )).onClick(a).build();
-                            }
-
-                            result.append(t);
+                            part = unpackCQCodeRich(obj);
                             break;
                         }
                     }
+
                 }
+
+                if (part != null) result.append(part);
+
             }
 
             //logger.info(result.build().toString());
             return result.build();
 
-        } catch (JSONException e){
+        } catch (JSONException e) {
             logger.error("Can not resolve this message", e);
             return Text.builder().build();
         }
 
+    }
+
+    private Text unpackCQCodeRich(JSONObject obj) {
+        URL url = null;
+        try {
+            url = new URL(MessageTools.Base64Decode(obj.getString("url")));
+        } catch (Exception ignored) {
+
+        }
+
+        Text ret;
+        if (url == null) {
+            ret = textConfig.messageFormat().rich().apply(ImmutableMap.of(
+                    "TEXT", MessageTools.Base64Decode(obj.getString("text"))
+            )).build();
+        } else {
+            ClickAction a = TextActions.openUrl(url);
+            ret = textConfig.messageFormat().rich().apply(ImmutableMap.of(
+                    "TEXT", MessageTools.Base64Decode(obj.getString("text"))
+            )).onClick(a).build();
+        }
+
+        return ret;
+    }
+
+    private Text unpackCQCodeShare(JSONObject obj) {
+        URL url = null;
+        try {
+            url = new URL(MessageTools.Base64Decode(obj.getString("url")));
+        } catch (Exception ignored) {
+
+        }
+
+        Text ret;
+        if (url == null) {
+            ret = textConfig.messageFormat().share().apply(ImmutableMap.of(
+                    "TITLE", MessageTools.Base64Decode(obj.getString("title")),
+                    "CONTENT", MessageTools.Base64Decode(obj.getString("content"))
+            )).build();
+        } else {
+            ClickAction a = TextActions.openUrl(url);
+            ret = textConfig.messageFormat().share().apply(ImmutableMap.of(
+                    "TITLE", MessageTools.Base64Decode(obj.getString("title")),
+                    "CONTENT", MessageTools.Base64Decode(obj.getString("content"))
+            )).onClick(a).build();
+        }
+
+        return ret;
+    }
+
+    private Text unpackCQCodeHB(JSONObject obj) {
+        return textConfig.messageFormat().redEnvelope().apply(ImmutableMap.of(
+                "TITLE", Text.of(MessageTools.Base64Decode(obj.getString("title")))
+        )).build();
+    }
+
+    private Text unpackCQCodeImage(JSONObject obj) {
+        URL url = null;
+        try {
+            url = new URL(obj.getString("url"));
+        } catch (Exception ignored) {
+
+        }
+
+        Text ret;
+        if (url == null) {
+            ret = textConfig.messageFormat().image().apply(ImmutableMap.of(
+                    "CONTENT", MessageTools.Base64Decode(obj.getString("content"))
+            )).build();
+
+        } else {
+            ClickAction a = TextActions.openUrl(url);
+            ret = textConfig.messageFormat().image().apply(ImmutableMap.of(
+                    "CONTENT", MessageTools.Base64Decode(obj.getString("content"))
+            )).onClick(a).build();
+        }
+
+        return ret;
+    }
+
+    private Text unpackCQCodeFace(JSONObject obj) {
+        URL url = null;
+        try {
+            String strUrl = textConfig.messageFormat().faceURL().
+                    replace("{ID}", String.valueOf(obj.getInt("id")));
+            url = new URL(strUrl);
+        } catch (Exception ignored) {
+
+        }
+
+        Text ret = null;
+        if (url == null) {
+            ret = textConfig.messageFormat().face().apply(ImmutableMap.of(
+                    "CONTENT", MessageTools.Base64Decode(obj.getString("content"))
+            )).build();
+
+        } else {
+            ClickAction a = TextActions.openUrl(url);
+            ret = textConfig.messageFormat().face().apply(ImmutableMap.of(
+                    "CONTENT", MessageTools.Base64Decode(obj.getString("content"))
+            )).onClick(a).build();
+        }
+
+        return ret;
+    }
+
+    private Text unpackCQCodeAt(JSONObject obj) {
+        return textConfig.messageFormat().at().apply(ImmutableMap.of(
+                "TARGET", MessageTools.Base64Decode(obj.getString("target"))
+        )).build();
+    }
+
+    private Text unpackText(JSONObject obj) {
+        return textConfig.messageFormat().text().apply(ImmutableMap.of(
+                "CONTENT", Text.of(MessageTools.Base64Decode(obj.getString("content")))
+        )).build();
     }
 }
