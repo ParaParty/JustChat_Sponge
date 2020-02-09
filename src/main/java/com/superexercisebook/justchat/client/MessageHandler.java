@@ -24,7 +24,6 @@ import com.xuhao.didi.socket.client.sdk.client.action.ISocketActionListener;
 
 public class MessageHandler implements ISocketActionListener {
 
-
     private final IConnectionManager clientManager;
     private final OkSocketOptions.Builder okOptionsBuilder;
 
@@ -40,10 +39,8 @@ public class MessageHandler implements ISocketActionListener {
         GlobalState.logger.info("Connected to the server. Waiting for authorizing.");
         GlobalState.logger.info("Server information : " + connectionInfo.getIp() + ":" + connectionInfo.getPort());
 
-        if (GlobalState.config.getGeneral().server().pulseInterval() > 0) {
-            okOptionsBuilder.setPulseFrequency(GlobalState.config.getGeneral().server().pulseInterval() * 1000);
-            clientManager.getPulseManager().setPulseSendable(mPulseData).pulse();
-        }
+        okOptionsBuilder.setPulseFrequency(20 * 1000);
+        clientManager.getPulseManager().setPulseSendable(mPulseData).pulse();
 
         Registration Pack = new Registration();
         clientManager.send(Pack);

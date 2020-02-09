@@ -40,11 +40,13 @@ public class Client extends Thread {
         clientManager.connect();
     }
 
-    public void updateConfig(){
+    public void updateConfig() {
         clientManager.disconnect();
         updateConnectionInfo();
         confirmAndConnect();
-    };
+    }
+
+    ;
 
 
 }

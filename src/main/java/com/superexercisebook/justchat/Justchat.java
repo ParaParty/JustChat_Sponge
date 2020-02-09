@@ -89,7 +89,7 @@ public class Justchat {
     @Listener(order = Order.DEFAULT)
     public void onPlayerLogin(ClientConnectionEvent.Join loginEvent, @First Player player) {
         Info pack = null;
-        if (GlobalState.config.getGeneral().functionControl().forwardPlayerLoggingAndDisconnectionMessages()) {
+        if (GlobalState.config.getGeneral().functionControl().forwardPlayersLoggingAndDisconnectionMessages()) {
             pack = new Info(PacketType.INFO_EventType_Join, player, loginEvent.getMessage().toPlain());
         } else {
             pack = new Info(PacketType.INFO_EventType_Join, player);
@@ -119,7 +119,7 @@ public class Justchat {
         if ((!event.isCancelled()) && (event.getTargetEntity() instanceof Player)) {
             Player player = (Player) event.getTargetEntity();
             Info pack = null;
-            if (GlobalState.config.getGeneral().functionControl().forwardPlayerDeadOriginalMessages()) {
+            if (GlobalState.config.getGeneral().functionControl().forwardPlayersDeadOriginalMessages()) {
                 pack = new Info(PacketType.INFO_EventType_PlayerDead, player, event.getMessage().toPlain());
             } else {
                 pack = new Info(PacketType.INFO_EventType_PlayerDead, player);

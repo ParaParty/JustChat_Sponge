@@ -20,9 +20,6 @@ public class Server {
     @Setting(comment = "The name of this terminal")
     private String name = "A Sponge Server";
 
-    @Setting(comment = "Pulse Interval in SECONDS")
-    private int pulseInterval = 20;
-
     public String ip() {
         return ip;
     }
@@ -37,10 +34,6 @@ public class Server {
 
     public String name() {
         return name;
-    }
-
-    public int pulseInterval() {
-        return pulseInterval;
     }
 
 }
