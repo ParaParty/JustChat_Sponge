@@ -12,11 +12,11 @@ import java.util.Iterator;
 
 
 public class PlayerList extends Packer {
-    private int count=0;
+    private int count = 0;
     private JSONArray content;
 
 
-    private void getPlayerList(){
+    private void getPlayerList() {
         try {
             Iterator<Player> playerList = Sponge.getServer().getOnlinePlayers().iterator();
             //List<String> list = new ArrayList();
@@ -34,7 +34,7 @@ public class PlayerList extends Packer {
         }
     }
 
-    public PlayerList(String sender, String world, String world_display){
+    public PlayerList(String sender, String world, String world_display) {
         getPlayerList();
         JSONObject jsonObject = new JSONObject();
         try {
@@ -43,10 +43,10 @@ public class PlayerList extends Packer {
             jsonObject.put("subtype", PacketType.PlayerListResponse);
             jsonObject.put("max", Sponge.getServer().getMaxPlayers());
             jsonObject.put("count", count);
-            jsonObject.put("player_list",content);
-            jsonObject.put("sender",sender);
-            jsonObject.put("world",world);
-            jsonObject.put("world_display",world_display);
+            jsonObject.put("player_list", content);
+            jsonObject.put("sender", sender);
+            jsonObject.put("world", world);
+            jsonObject.put("world_display", world_display);
             this.MSG = jsonObject.toString();
         } catch (JSONException e) {
             e.printStackTrace();

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import com.superexercisebook.justchat.GlobalState;
 import com.superexercisebook.justchat.config.general.General;
 import com.superexercisebook.justchat.config.locale.Locale;
 import ninja.leaping.configurate.ConfigurationNode;
@@ -16,38 +17,27 @@ import org.slf4j.Logger;
 import org.spongepowered.api.config.ConfigDir;
 
 public class Settings {
-    private Logger logger;
-    private Path dataFolder;
-
-
     private ObjectMapper<General>.BoundInstance general;
     private ObjectMapper<Locale>.BoundInstance textMapper;
 
     private final ConfigurationOptions options = getConfigurationOptions();
 
-    public Settings(Logger logger, @ConfigDir(sharedRoot = false) Path dataFolder) {
-        this.logger = logger;
-        this.dataFolder = dataFolder;
-
+    public Settings() {
         try {
-            logger.info(General.class.getDeclaredConstructor().toString());
-
             general = options.getObjectMapperFactory().getMapper(General.class).bindToNew();
             textMapper = options.getObjectMapperFactory().getMapper(Locale.class).bindToNew();
-        } catch (NoSuchMethodException E) {
-            logger.error("No such a Constructor", E);
         } catch (ObjectMappingException objMappingExc) {
-            logger.error("Invalid plugin structure", objMappingExc);
+            GlobalState.logger.error("Invalid plugin structure", objMappingExc);
         }
-
         load();
     }
 
 
-    /*
-        Copy from:
-        https://github.com/games647/FlexibleLogin/blob/master/src/main/java/com/github/games647/flexiblelogin/config/Settings.java
-    */
+    /**
+     * Reference https://github.com/games647/FlexibleLogin/blob/master/src/main/java/com/github/games647/flexiblelogin/config/Settings.java
+     *
+     * @return
+     */
     private ConfigurationOptions getConfigurationOptions() {
         ConfigurationOptions defaults = ConfigurationOptions.defaults();
 
@@ -61,12 +51,12 @@ public class Settings {
 
     private void load() {
 
-        Path configFile = dataFolder.resolve("config.conf");
-        Path textFile = dataFolder.resolve("locale.conf");
+        Path configFile = GlobalState.dataFolder.resolve("config.conf");
+        Path textFile = GlobalState.dataFolder.resolve("locale.conf");
 
         try {
-            if (Files.notExists(dataFolder)) {
-                Files.createDirectories(dataFolder);
+            if (Files.notExists(GlobalState.dataFolder)) {
+                Files.createDirectories(GlobalState.dataFolder);
             }
 
             if (Files.notExists(configFile)) {
@@ -77,7 +67,7 @@ public class Settings {
                 Files.createFile(textFile);
             }
         } catch (IOException ioEx) {
-            logger.error("Failed to create default config file", ioEx);
+            GlobalState.logger.error("Failed to create default config file", ioEx);
         }
 
         loadMapper(general, configFile);
@@ -98,9 +88,9 @@ public class Settings {
                 //add missing default values
                 loader.save(rootNode);
             } catch (ObjectMappingException objMappingExc) {
-                logger.error("Error loading the configuration", objMappingExc);
+                GlobalState.logger.error("Error loading the configuration", objMappingExc);
             } catch (IOException ioExc) {
-                logger.error("Error saving the default configuration", ioExc);
+                GlobalState.logger.error("Error saving the default configuration", ioExc);
             }
         }
     }

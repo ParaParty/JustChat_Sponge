@@ -9,7 +9,7 @@ import org.spongepowered.api.entity.living.player.Player;
 
 public class Info extends Packer {
 
-    public Info(int eventType, Player player){
+    public Info(int eventType, Player player) {
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("version", PacketType.PackVersion);
@@ -23,7 +23,7 @@ public class Info extends Packer {
     }
 
 
-    public Info(int eventType, Player player, String content){
+    public Info(int eventType, Player player, String content) {
 
         JSONObject jsonObject = new JSONObject();
         try {
@@ -39,7 +39,7 @@ public class Info extends Packer {
     }
 
 
-    public Info(int eventType, String content){
+    public Info(int eventType, String content) {
 
         JSONObject jsonObject = new JSONObject();
         try {

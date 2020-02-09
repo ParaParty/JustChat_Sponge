@@ -1,12 +1,12 @@
 package com.superexercisebook.justchat.client;
 
 import com.google.common.collect.ImmutableMap;
+import com.superexercisebook.justchat.GlobalState;
 import com.superexercisebook.justchat.config.locale.Locale;
 import com.superexercisebook.justchat.client.packet.MessageTools;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.slf4j.Logger;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.ClickAction;
 import org.spongepowered.api.text.action.TextActions;
@@ -16,11 +16,11 @@ import java.net.URL;
 
 class MessageContentUnpacker {
     private JSONArray data;
-    Logger logger;
-    Locale textConfig;
+    private Locale textConfig;
 
     MessageContentUnpacker(JSONArray s) {
         data = s;
+        textConfig = GlobalState.config.getText();
     }
 
     Text toText() {
@@ -78,7 +78,7 @@ class MessageContentUnpacker {
             return result.build();
 
         } catch (JSONException e) {
-            logger.error("Can not resolve this message", e);
+            GlobalState.logger.error("Can not resolve this message", e);
             return Text.builder().build();
         }
 

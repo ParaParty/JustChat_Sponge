@@ -18,13 +18,15 @@ dependencies {
     compile 'org.spongepowered:spongeapi:7.1.0'
     compile "org.json:json:20180813"
 
-    //Basic Socket client functionality
-    compile 'com.tonystark.android:socket:latest.release'
+    compile 'com.tonystark.android:socket:4.2.3'
 }
 
 shadowJar{
     dependencies{
         include(dependency("org.json:json:20180813"))
+        include(dependency("com.tonystark.android:socket:4.2.3"))
+        include(dependency("com.tonystark.android:socket-common-interface:4.2.3"))
+        include(dependency("com.tonystark.android:socket-core:4.2.3"))
     }
 }
 

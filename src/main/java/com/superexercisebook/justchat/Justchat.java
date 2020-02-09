@@ -4,12 +4,15 @@ import com.google.inject.Inject;
 
 import java.nio.file.Path;
 
+import com.superexercisebook.justchat.command.Reload;
 import com.superexercisebook.justchat.config.Settings;
 import com.superexercisebook.justchat.client.Client;
 import com.superexercisebook.justchat.client.packet.PacketType;
 import com.superexercisebook.justchat.client.packet.packer.Chat;
 import com.superexercisebook.justchat.client.packet.packer.Info;
 import org.slf4j.Logger;
+import org.spongepowered.api.Sponge;
+import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.config.ConfigDir;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
@@ -20,6 +23,7 @@ import org.spongepowered.api.event.game.state.GameStartedServerEvent;
 import org.spongepowered.api.event.message.MessageChannelEvent;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
 import org.spongepowered.api.plugin.Plugin;
+import org.spongepowered.api.text.Text;
 
 @Plugin(
         id = "justchat",
@@ -31,11 +35,6 @@ import org.spongepowered.api.plugin.Plugin;
         }
 )
 public class Justchat {
-
-
-    private Client client;
-
-    private Settings config;
 
     @Inject
     Logger logger;
@@ -53,20 +52,20 @@ public class Justchat {
     public void onServerStart(GameStartedServerEvent event) {
         logger.info("JustChat with your friends.");
 
-        config = new Settings(logger, defaultConfigDir);
+        GlobalState.logger = logger;
+        GlobalState.dataFolder = defaultConfigDir;
 
-        client = new Client(logger, config);
-        client.start();
+        Reload reloadCommand = new Reload(this);
+        CommandSpec reloadCommandSpec = CommandSpec.builder()
+                .description(Text.of("Reload the configuration."))
+                .permission("justchat.reload")
+                .executor(reloadCommand)
+                .build();
+        Sponge.getCommandManager().register(this, reloadCommandSpec, "reload");
 
-
-    }
-
-    public Logger getLogger() {
-        return logger;
-    }
-
-    public Settings getConfigManager() {
-        return config;
+        GlobalState.config = new Settings();
+        GlobalState.client = new Client();
+        GlobalState.client.start();
     }
 
     /**
@@ -77,8 +76,8 @@ public class Justchat {
      */
     @Listener(order = Order.POST)
     public void onChat(MessageChannelEvent.Chat chatEvent, @First Player player) {
-        Chat Pack = new Chat(chatEvent, player);
-        client.clientManager.send(Pack);
+        Chat pack = new Chat(chatEvent, player);
+        GlobalState.client.clientManager.send(pack);
     }
 
     /**
@@ -89,9 +88,13 @@ public class Justchat {
      */
     @Listener(order = Order.DEFAULT)
     public void onPlayerLogin(ClientConnectionEvent.Join loginEvent, @First Player player) {
-        Info Pack = new Info(PacketType.INFO_EventType_Join, player);
-        client.clientManager.send(Pack);
-
+        Info pack = null;
+        if (GlobalState.config.getGeneral().functionControl().forwardPlayerLoggingAndDisconnectionMessages()) {
+            pack = new Info(PacketType.INFO_EventType_Join, player, loginEvent.getMessage().toPlain());
+        } else {
+            pack = new Info(PacketType.INFO_EventType_Join, player);
+        }
+        GlobalState.client.clientManager.send(pack);
     }
 
     /**
@@ -102,8 +105,8 @@ public class Justchat {
      */
     @Listener(order = Order.DEFAULT)
     public void onPlayerDisconnect(ClientConnectionEvent.Disconnect disconnectEvent, @First Player player) {
-        Info Pack = new Info(PacketType.INFO_EventType_Disconnect, player);
-        client.clientManager.send(Pack);
+        Info pack = new Info(PacketType.INFO_EventType_Disconnect, player);
+        GlobalState.client.clientManager.send(pack);
     }
 
     /**
@@ -115,8 +118,13 @@ public class Justchat {
     public void onPlayerDead(DestructEntityEvent.Death event) {
         if ((!event.isCancelled()) && (event.getTargetEntity() instanceof Player)) {
             Player player = (Player) event.getTargetEntity();
-            Info Pack = new Info(PacketType.INFO_EventType_PlayerDead, player, event.getOriginalMessage().toPlain());
-            client.clientManager.send(Pack);
+            Info pack = null;
+            if (GlobalState.config.getGeneral().functionControl().forwardPlayerDeadOriginalMessages()) {
+                pack = new Info(PacketType.INFO_EventType_PlayerDead, player, event.getMessage().toPlain());
+            } else {
+                pack = new Info(PacketType.INFO_EventType_PlayerDead, player);
+            }
+            GlobalState.client.clientManager.send(pack);
         }
     }
 }

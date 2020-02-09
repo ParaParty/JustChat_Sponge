@@ -1,12 +1,12 @@
 package com.superexercisebook.justchat.client;
 
 import com.google.common.collect.ImmutableMap;
+import com.superexercisebook.justchat.GlobalState;
 import com.superexercisebook.justchat.client.packet.*;
 import com.superexercisebook.justchat.client.packet.packer.Packer;
 import com.superexercisebook.justchat.client.packet.packer.PlayerList;
 import com.superexercisebook.justchat.client.packet.packer.Pulse;
 import com.superexercisebook.justchat.client.packet.packer.Registration;
-import com.superexercisebook.justchat.config.Settings;
 import com.xuhao.didi.core.iocore.interfaces.IPulseSendable;
 import com.xuhao.didi.core.iocore.interfaces.ISendable;
 import com.xuhao.didi.core.pojo.OriginalData;
@@ -15,7 +15,6 @@ import com.xuhao.didi.socket.client.sdk.client.OkSocketOptions;
 import com.xuhao.didi.socket.client.sdk.client.connection.IConnectionManager;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.slf4j.Logger;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.channel.MessageChannel;
 
@@ -25,43 +24,38 @@ import com.xuhao.didi.socket.client.sdk.client.action.ISocketActionListener;
 
 public class MessageHandler implements ISocketActionListener {
 
-    private final Logger logger;
-    private final Settings config;
+
     private final IConnectionManager clientManager;
     private final OkSocketOptions.Builder okOptionsBuilder;
 
     private Pulse mPulseData = new Pulse();
 
-    /**
-     * Constructor
-     *
-     * @param logger Game logger.
-     * @param config Plugin configuration
-     */
-    MessageHandler(Logger logger, Settings config, IConnectionManager clientManager, OkSocketOptions.Builder okOptionsBuilder) {
-        this.logger = logger;
-        this.config = config;
+    MessageHandler(IConnectionManager clientManager, OkSocketOptions.Builder okOptionsBuilder) {
         this.clientManager = clientManager;
         this.okOptionsBuilder = okOptionsBuilder;
     }
 
-
     @Override
-    public void onSocketConnectionSuccess(ConnectionInfo info, String action) {
-        logger.info("Connected to the server. Waiting for authorizing.");
+    public void onSocketConnectionSuccess(ConnectionInfo connectionInfo, String action) {
+        GlobalState.logger.info("Connected to the server. Waiting for authorizing.");
+        GlobalState.logger.info("Server information : " + connectionInfo.getIp() + ":" + connectionInfo.getPort());
 
-        if (config.getGeneral().server().pulseInterval() > 0) {
-            okOptionsBuilder.setPulseFrequency(config.getGeneral().server().pulseInterval() * 1000);
+        if (GlobalState.config.getGeneral().server().pulseInterval() > 0) {
+            okOptionsBuilder.setPulseFrequency(GlobalState.config.getGeneral().server().pulseInterval() * 1000);
             clientManager.getPulseManager().setPulseSendable(mPulseData).pulse();
         }
 
-        Registration Pack = new Registration(config);
+        Registration Pack = new Registration();
         clientManager.send(Pack);
     }
 
     @Override
     public void onSocketConnectionFailed(ConnectionInfo connectionInfo, String s, Exception e) {
-
+        GlobalState.logger.info("Fail to connect to the server.");
+        GlobalState.logger.info("Server information : " + connectionInfo.getIp() + ":" + connectionInfo.getPort());
+        if (e != null) {
+            GlobalState.logger.error(e.getMessage());
+        }
     }
 
     @Override
@@ -99,10 +93,8 @@ public class MessageHandler implements ISocketActionListener {
                         String world = jsonObject.getString("world");
                         String world_display = MessageTools.Base64Decode(jsonObject.getString("world_display"));
                         MessageContentUnpacker content = new MessageContentUnpacker(jsonObject.getJSONArray("content"));
-                        content.textConfig = config.getText();
-                        content.logger = logger;
 
-                        Text Content = config.getText().messageFormat().overview().apply(ImmutableMap.of(
+                        Text Content = GlobalState.config.getText().messageFormat().overview().apply(ImmutableMap.of(
                                 "SENDER", sender,
                                 "WORLD", world,
                                 "WORLD_DISPLAY", world_display,
@@ -121,18 +113,18 @@ public class MessageHandler implements ISocketActionListener {
                         clientManager.send(pack);
 
                     } else {
-                        logger.info("Received a message with an unrecognized type.");
+                        GlobalState.logger.info("Received a message with an unrecognized type.");
                     }
 
                 } else {
                     if (version > PacketType.PackVersion) {
-                        logger.info("Received a message made by a higher-version server.");
+                        GlobalState.logger.info("Received a message made by a higher-version server.");
                     } else {
-                        logger.info("Received a message made by a lower-version server.");
+                        GlobalState.logger.info("Received a message made by a lower-version server.");
                     }
                 }
             } catch (JSONException e) {
-                logger.error("Received an unrecognized message.", e);
+                GlobalState.logger.error("Received an unrecognized message.", e);
             }
 
 
@@ -153,7 +145,11 @@ public class MessageHandler implements ISocketActionListener {
 
     @Override
     public void onSocketDisconnection(ConnectionInfo connectionInfo, String s, Exception e) {
-
+        GlobalState.logger.info("Disconnected from the server.");
+        GlobalState.logger.info("Server information : " + connectionInfo.getIp() + ":" + connectionInfo.getPort());
+        if (e != null) {
+            GlobalState.logger.info(e.getMessage());
+        }
     }
 
 

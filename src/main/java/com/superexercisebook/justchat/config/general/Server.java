@@ -12,7 +12,7 @@ public class Server {
     private String ip = "127.0.0.1";
 
     @Setting(comment = "The Port number of JustChat server")
-    private int port = 54321;
+    private int port = 38440;
 
     @Setting(comment = "The ID of this terminal")
     private String ID = UUID.randomUUID().toString();

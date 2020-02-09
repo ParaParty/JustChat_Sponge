@@ -12,11 +12,11 @@ import org.spongepowered.api.event.message.MessageChannelEvent;
 
 
 public class Chat extends Packer {
-    private JSONArray ContentPacker(String msg){
+    private JSONArray ContentPacker(String msg) {
         JSONArray jsonArray = new JSONArray();
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put("type","text");
+            jsonObject.put("type", "text");
             jsonObject.put("content", MessageTools.Base64Encode(msg));
             jsonArray.put(jsonObject);
             return jsonArray;
@@ -27,8 +27,7 @@ public class Chat extends Packer {
     }
 
 
-
-    public Chat(MessageChannelEvent.Chat chatEvent, @First Player player){
+    public Chat(MessageChannelEvent.Chat chatEvent, @First Player player) {
 
         JSONObject jsonObject = new JSONObject();
         try {
@@ -37,14 +36,13 @@ public class Chat extends Packer {
             jsonObject.put("world", MessageTools.Base64Encode(player.getWorld().getName()));
             jsonObject.put("world_display", MessageTools.Base64Encode(player.getWorld().getName()));
             jsonObject.put("sender", MessageTools.Base64Encode(player.getName()));
-            jsonObject.put("content",ContentPacker(chatEvent.getRawMessage().toPlain()));
+            jsonObject.put("content", ContentPacker(chatEvent.getRawMessage().toPlain()));
             this.MSG = jsonObject.toString();
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
     }
-
 
 
 }
