@@ -19,34 +19,23 @@ public class Client extends Thread {
         GlobalState.logger.info("Target server: " + GlobalState.config.getGeneral().server().ip() + ":" + GlobalState.config.getGeneral().server().port());
         clientManager = OkSocket.open(info);
 
-        // Setting
         OkSocketOptions.Builder okOptionsBuilder = new OkSocketOptions.Builder();
         okOptionsBuilder.setReaderProtocol(new ProtocolDefinition());
         clientManager.option(okOptionsBuilder.build());
 
+        clientManager.getReconnectionManager().addIgnoreException(ReloadException.class);
+
         MessageHandler justChatClientHandler = new MessageHandler(clientManager, okOptionsBuilder);
         clientManager.registerReceiver(justChatClientHandler);
 
-        confirmAndConnect();
-    }
-
-    private void updateConnectionInfo() {
-        ConnectionInfo info = new ConnectionInfo(GlobalState.config.getGeneral().server().ip(), GlobalState.config.getGeneral().server().port());
-        GlobalState.logger.info("Target server: " + GlobalState.config.getGeneral().server().ip() + ":" + GlobalState.config.getGeneral().server().port());
-        clientManager.switchConnectionInfo(info);
-    }
-
-    private void confirmAndConnect() {
         clientManager.connect();
     }
 
     public void updateConfig() {
-        clientManager.disconnect();
-        updateConnectionInfo();
-        confirmAndConnect();
+        ConnectionInfo info = new ConnectionInfo(GlobalState.config.getGeneral().server().ip(), GlobalState.config.getGeneral().server().port());
+        clientManager.disconnect(new ReloadException(info));
     }
 
-    ;
 
 
 }

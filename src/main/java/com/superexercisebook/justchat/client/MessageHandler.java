@@ -144,7 +144,10 @@ public class MessageHandler implements ISocketActionListener {
     public void onSocketDisconnection(ConnectionInfo connectionInfo, String s, Exception e) {
         GlobalState.logger.info("Disconnected from the server.");
         GlobalState.logger.info("Server information : " + connectionInfo.getIp() + ":" + connectionInfo.getPort());
-        if (e != null) {
+        if (e instanceof ReloadException) {
+            clientManager.switchConnectionInfo(((ReloadException) e).getNewConnection());
+            clientManager.connect();
+        } else if (e != null) {
             GlobalState.logger.info(e.getMessage());
         }
     }
