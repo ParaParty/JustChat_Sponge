@@ -19,6 +19,8 @@ dependencies {
     compile "org.json:json:20180813"
 
     compile 'com.tonystark.android:socket:4.2.3'
+
+    compile 'com.linkedin.urls:url-detector:0.1.17'
 }
 
 shadowJar{
@@ -27,6 +29,7 @@ shadowJar{
         include(dependency("com.tonystark.android:socket:4.2.3"))
         include(dependency("com.tonystark.android:socket-common-interface:4.2.3"))
         include(dependency("com.tonystark.android:socket-core:4.2.3"))
+        include(dependency("com.linkedin.urls:url-detector:0.1.17"))
     }
 }
 

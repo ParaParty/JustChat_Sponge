@@ -1,6 +1,9 @@
 package com.superexercisebook.justchat.client;
 
 import com.google.common.collect.ImmutableMap;
+import com.linkedin.urls.Url;
+import com.linkedin.urls.detection.UrlDetector;
+import com.linkedin.urls.detection.UrlDetectorOptions;
 import com.superexercisebook.justchat.GlobalState;
 import com.superexercisebook.justchat.config.locale.Locale;
 import com.superexercisebook.justchat.client.packet.MessageTools;
@@ -12,6 +15,7 @@ import org.spongepowered.api.text.action.ClickAction;
 import org.spongepowered.api.text.action.TextActions;
 
 import java.net.URL;
+import java.util.List;
 
 
 class MessageContentUnpacker {
@@ -74,7 +78,6 @@ class MessageContentUnpacker {
 
             }
 
-            //logger.info(result.build().toString());
             return result.build();
 
         } catch (JSONException e) {
@@ -194,9 +197,104 @@ class MessageContentUnpacker {
         )).build();
     }
 
+
     private Text unpackText(JSONObject obj) {
-        return textConfig.messageFormat().text().apply(ImmutableMap.of(
-                "CONTENT", Text.of(MessageTools.Base64Decode(obj.getString("content")))
-        )).build();
+        String raw = MessageTools.Base64Decode(obj.getString("content"));
+        UrlDetector parser = new UrlDetector(raw, UrlDetectorOptions.HTML);
+        List<Url> detectUrl = parser.detect();
+
+        Text.Builder retText = Text.builder();
+
+        int plainTextStart = 0;
+        int i = 0;  // Original Content Pointer
+        for (Url nowUrl : detectUrl) {
+            String originalUrl = nowUrl.getOriginalUrl();
+
+            // next array
+            int[] next = new int[originalUrl.length()];
+            getNext(originalUrl, next);
+
+            // match
+            int j = 0;
+            for (j = 0; (i < raw.length()) && (j < originalUrl.length()); ) {
+                if ((j == -1) || (raw.charAt(i) == originalUrl.charAt(j))) {
+                    i++;
+                    j++;
+                } else {
+                    j = next[j];
+                }
+            }
+
+            /// current plain Text
+            ///     Start  plainTextStart
+            ///     End    i - originalUrl.length()
+            ///     Length i - originalUrl.length() - plainTextStart
+            if (i - originalUrl.length() - plainTextStart > 0) {
+                String part = raw.substring(plainTextStart, i - originalUrl.length());
+                Text partText = textConfig.messageFormat().text().apply(ImmutableMap.of(
+                        "CONTENT", Text.of(part)
+                )).build();
+                retText.append(partText);
+            }
+
+            /// current URL
+            ///     Start  i - originalUrl.length()
+            ///     End    i
+            ///     Length originalUrl.length()
+            String part = raw.substring(i - originalUrl.length(), i);
+
+            URL url = null;
+            try {
+                url = new URL(nowUrl.toString());
+            } catch (Exception ignored) {
+
+            }
+
+            Text partText;
+
+            if (url == null) {
+                partText = textConfig.messageFormat().URL().apply(ImmutableMap.of(
+                        "CONTENT", Text.of(part)
+                )).build();
+            } else {
+                ClickAction a = TextActions.openUrl(url);
+                partText = textConfig.messageFormat().URL().apply(ImmutableMap.of(
+                        "CONTENT", Text.of(part)
+                )).onClick(a).build();
+            }
+
+            retText.append(partText);
+
+
+            plainTextStart = i;
+
+        }
+
+
+        if (i < raw.length()) {
+            String part = raw.substring(i, raw.length());
+            Text partText = textConfig.messageFormat().text().apply(ImmutableMap.of(
+                    "CONTENT", Text.of(part)
+            )).build();
+            retText.append(partText);
+        }
+
+        return retText.build();
+    }
+
+    private void getNext(String pattern, int[] next) {
+        int i = 0;
+        int k = -1;
+        next[0] = -1;
+
+        for (i = 0; i < pattern.length()-1; ) {
+            if ((k == -1) || (pattern.charAt(i) == pattern.charAt(k))) {
+                i++;
+                k++;
+                if (pattern.charAt(k) != pattern.charAt(i)) next[i] = k;
+                else next[i] = next[k];
+            } else k = next[k];
+        }
+
     }
 }
