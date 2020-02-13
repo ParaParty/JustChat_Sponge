@@ -76,6 +76,8 @@ public class Justchat {
      */
     @Listener(order = Order.POST)
     public void onChat(MessageChannelEvent.Chat chatEvent, @First Player player) {
+        if (!player.hasPermission("justchat.forward.chat")) return;
+
         Chat pack = new Chat(chatEvent, player);
         GlobalState.client.clientManager.send(pack);
     }
@@ -88,6 +90,8 @@ public class Justchat {
      */
     @Listener(order = Order.DEFAULT)
     public void onPlayerLogin(ClientConnectionEvent.Join loginEvent, @First Player player) {
+        if (!player.hasPermission("justchat.forward.network.join")) return;
+
         Info pack = null;
         if (GlobalState.config.getGeneral().functionControl().forwardPlayersLoggingAndDisconnectionMessages()) {
             pack = new Info(PacketType.INFO_EventType_Join, player, loginEvent.getMessage().toPlain());
@@ -105,6 +109,8 @@ public class Justchat {
      */
     @Listener(order = Order.DEFAULT)
     public void onPlayerDisconnect(ClientConnectionEvent.Disconnect disconnectEvent, @First Player player) {
+        if (!player.hasPermission("justchat.forward.network.disconnect")) return;
+
         Info pack = new Info(PacketType.INFO_EventType_Disconnect, player);
         GlobalState.client.clientManager.send(pack);
     }
@@ -118,6 +124,9 @@ public class Justchat {
     public void onPlayerDead(DestructEntityEvent.Death event) {
         if ((!event.isCancelled()) && (event.getTargetEntity() instanceof Player)) {
             Player player = (Player) event.getTargetEntity();
+
+            if (!player.hasPermission("justchat.forward.death")) return;
+
             Info pack = null;
             if (GlobalState.config.getGeneral().functionControl().forwardPlayersDeadOriginalMessages()) {
                 pack = new Info(PacketType.INFO_EventType_PlayerDead, player, event.getMessage().toPlain());
