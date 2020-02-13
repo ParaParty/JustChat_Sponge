@@ -4,15 +4,13 @@ import com.google.inject.Inject;
 
 import java.nio.file.Path;
 
-import com.superexercisebook.justchat.command.Reload;
+import com.superexercisebook.justchat.command.CommandRegister;
 import com.superexercisebook.justchat.config.Settings;
 import com.superexercisebook.justchat.client.Client;
 import com.superexercisebook.justchat.client.packet.PacketType;
 import com.superexercisebook.justchat.client.packet.packer.Chat;
 import com.superexercisebook.justchat.client.packet.packer.Info;
 import org.slf4j.Logger;
-import org.spongepowered.api.Sponge;
-import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.config.ConfigDir;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
@@ -23,7 +21,6 @@ import org.spongepowered.api.event.game.state.GameStartedServerEvent;
 import org.spongepowered.api.event.message.MessageChannelEvent;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
 import org.spongepowered.api.plugin.Plugin;
-import org.spongepowered.api.text.Text;
 
 @Plugin(
         id = "justchat",
@@ -55,13 +52,7 @@ public class Justchat {
         GlobalState.logger = logger;
         GlobalState.dataFolder = defaultConfigDir;
 
-        Reload reloadCommand = new Reload(this);
-        CommandSpec reloadCommandSpec = CommandSpec.builder()
-                .description(Text.of("Reload the configuration."))
-                .permission("justchat.reload")
-                .executor(reloadCommand)
-                .build();
-        Sponge.getCommandManager().register(this, reloadCommandSpec, "reload");
+        CommandRegister commandRegister = new CommandRegister(this);
 
         GlobalState.config = new Settings();
         GlobalState.client = new Client();
