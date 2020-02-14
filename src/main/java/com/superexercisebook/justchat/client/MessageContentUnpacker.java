@@ -14,7 +14,7 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.ClickAction;
 import org.spongepowered.api.text.action.TextActions;
 
-import java.net.URL;
+import java.net.*;
 import java.util.List;
 
 
@@ -243,25 +243,31 @@ class MessageContentUnpacker {
             ///     Length originalUrl.length()
             String part = raw.substring(i - originalUrl.length(), i);
 
-            URL url = null;
-            try {
-                url = new URL(nowUrl.toString());
-            } catch (Exception ignored) {
 
-            }
 
             Text partText;
 
-            if (url == null) {
-                partText = textConfig.messageFormat().URL().apply(ImmutableMap.of(
-                        "CONTENT", Text.of(part)
-                )).build();
-            } else {
+            try {
+                InetAddress address=InetAddress.getByName(IDN.toASCII(nowUrl.getHost()));
+                URL url = new URL(nowUrl.toString());
+
                 ClickAction a = TextActions.openUrl(url);
                 partText = textConfig.messageFormat().URL().apply(ImmutableMap.of(
                         "CONTENT", Text.of(part)
                 )).onClick(a).build();
+
+            } catch (MalformedURLException e) {
+
+                partText = textConfig.messageFormat().URL().apply(ImmutableMap.of(
+                        "CONTENT", Text.of(part)
+                )).build();
+
+            } catch (UnknownHostException e) {
+                partText = textConfig.messageFormat().text().apply(ImmutableMap.of(
+                        "CONTENT", Text.of(part)
+                )).build();
             }
+
 
             retText.append(partText);
 
