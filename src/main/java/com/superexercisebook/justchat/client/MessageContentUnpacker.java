@@ -197,7 +197,6 @@ class MessageContentUnpacker {
         )).build();
     }
 
-
     private Text unpackText(JSONObject obj) {
         String raw = MessageTools.Base64Decode(obj.getString("content"));
         UrlDetector parser = new UrlDetector(raw, UrlDetectorOptions.HTML);
@@ -243,34 +242,26 @@ class MessageContentUnpacker {
             ///     Length originalUrl.length()
             String part = raw.substring(i - originalUrl.length(), i);
 
-
-
             Text partText;
-
             try {
-                InetAddress address=InetAddress.getByName(IDN.toASCII(nowUrl.getHost()));
+                InetAddress address = InetAddress.getByName(IDN.toASCII(nowUrl.getHost()));
                 URL url = new URL(nowUrl.toString());
 
                 ClickAction a = TextActions.openUrl(url);
                 partText = textConfig.messageFormat().URL().apply(ImmutableMap.of(
                         "CONTENT", Text.of(part)
                 )).onClick(a).build();
-
             } catch (MalformedURLException e) {
-
                 partText = textConfig.messageFormat().URL().apply(ImmutableMap.of(
                         "CONTENT", Text.of(part)
                 )).build();
-
             } catch (UnknownHostException e) {
                 partText = textConfig.messageFormat().text().apply(ImmutableMap.of(
                         "CONTENT", Text.of(part)
                 )).build();
             }
 
-
             retText.append(partText);
-
 
             plainTextStart = i;
 
@@ -293,7 +284,7 @@ class MessageContentUnpacker {
         int k = -1;
         next[0] = -1;
 
-        for (i = 0; i < pattern.length()-1; ) {
+        for (i = 0; i < pattern.length() - 1; ) {
             if ((k == -1) || (pattern.charAt(i) == pattern.charAt(k))) {
                 i++;
                 k++;
