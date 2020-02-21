@@ -20,9 +20,9 @@ public class CommandRegister {
         MainCommand mainCommand = new MainCommand(justchat);
         CommandSpec mainCommandSpec = CommandSpec.builder()
                 .description(Text.of("Justchat"))
-                .permission("justchat.admin")
+                .permission("justchat.user")
                 .executor(mainCommand)
-                .child(reloadCommandSpec, "reload")
+                .child(reloadCommandSpec, "jc")
                 .build();
 
         Sponge.getCommandManager().register(justchat, mainCommandSpec, "justchat");
