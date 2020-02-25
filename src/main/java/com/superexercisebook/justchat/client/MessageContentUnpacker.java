@@ -255,7 +255,11 @@ class MessageContentUnpacker {
                 partText = textConfig.messageFormat().URL().apply(ImmutableMap.of(
                         "CONTENT", Text.of(part)
                 )).build();
-            } catch (UnknownHostException e) {
+            } /*catch (UnknownHostException e) {
+                partText = textConfig.messageFormat().text().apply(ImmutableMap.of(
+                        "CONTENT", Text.of(part)
+                )).build();
+            } */catch (Exception e) {
                 partText = textConfig.messageFormat().text().apply(ImmutableMap.of(
                         "CONTENT", Text.of(part)
                 )).build();
@@ -292,6 +296,6 @@ class MessageContentUnpacker {
                 else next[i] = next[k];
             } else k = next[k];
         }
-
     }
+
 }
