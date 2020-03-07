@@ -82,8 +82,6 @@ public class MessageHandler implements ISocketActionListener {
 
                     if (messageType == PacketType.PULSE) {
                         clientManager.getPulseManager().feed();
-                    } else if (messageType == PacketType.INFO) {
-
                     } else if (messageType == PacketType.MESSAGE) {
 
                         String sender = MessageTools.Base64Decode(jsonObject.getString("sender"));
@@ -108,6 +106,10 @@ public class MessageHandler implements ISocketActionListener {
                                 jsonObject.getString("world_display")
                         );
                         clientManager.send(pack);
+
+                    } else if (messageType == PacketType.INFO) {
+
+                    } else if (messageType == PacketType.REGISTRATION) {
 
                     } else {
                         GlobalState.logger.info("Received a message with an unrecognized type.");

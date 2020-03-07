@@ -10,6 +10,15 @@ public class CommandRegister {
 
     public CommandRegister(Justchat justchat) {
 
+        /*
+        ToggleCommand toggleCommand = new ToggleCommand(justchat);
+        CommandSpec toggleCommandSpec = CommandSpec.builder()
+                .description(Text.of("Justchat"))
+                .permission("justchat.user")
+                .executor(toggleCommand)
+                .build();
+        */
+
         ReloadCommand reloadCommand = new ReloadCommand(justchat);
         CommandSpec reloadCommandSpec = CommandSpec.builder()
                 .description(Text.of("Justchat"))
